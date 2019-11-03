@@ -1,0 +1,9 @@
+{
+	"authors": [
+		"RM Walter"
+	],
+	"copyright": "Copyright © 2019, RM Walter",
+	"description": "a guild management RPG inspired by Darkest Dungeons",
+	"license": "GNU-GPLv3",
+	"name": "opendarkness"
+}
