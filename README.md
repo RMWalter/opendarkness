@@ -2,25 +2,22 @@ This README is heavily work in progress and all sections are subject to change. 
 
 Open Darkness is intended to be a combination turn based RPG and guild management game written in D.
 
-dlang.org
-
-I want it to be fully accessible for the blind and visually impaired (like me) and will be doing absolutely no graphical work as a result. I will code a basic GUI using GtkD mainly for direct keyboard input and to provide others a place to hook into for graphics and sound output. I will initially use Espeak to provide audio feedback for accessibility. But I wouldn't mind expanding the system to be compatible with existing screen readers and similar later. But I will be doning no advanced sound work beyond that. If you guys want it to look fancy and have cool music and stuff, that's on you to create and implement.
-
 This project is meant to be the first part of a larger game logic engine project that has accessibility features built in.
 
 Current version is only a battle framework test.
 
-If you need to recompile the battle demo for yourself it currently only needs:
+You should be able to use Dub to build and run the program. Otherwise if you need to recompile the battle demo manually it currently only needs:
 
 opendarkness.d
 battle.d
 mob.d
 mobdefs.d (in the defs folder)
 JSONConvert.d
+equipment.d
 
 All the other files aren't utilized yet and some may be deleted in the future.
 
-When run, it generates a simple 4v4 battle. The only implemented action right now is "attack". ou can choose your target from 1-4. valid input is "a#" I.E "a1" to "a4" which stands for "attack, place #" you can also type "g", "m", "i", and "e" without any number after which are teh standins for "guard", "magic", "item", and "escape" respecitvely, but all they will do right now is write their corrosponding name.
+When run, it generates a simple 4v4 battle. The only implemented action right now is "attack". ou can choose your target from 1-4. valid input is "a#" I.E "a1" to "a4" which stands for "attack, place #" you can also type "g", "m", "i", and "e" without any number after which are teh standins for "guard", "magic", "item", and "escape" respectively, but all they will do right now is write their corrosponding name.
 
 
 INTENDED GAMEPLAY SYSTEMS:
@@ -112,10 +109,11 @@ You are working on deciphering a way to stop the invasion. But in the meantime y
 
 DEVELOPMENT ROADMAP:
 
-My plan right now is to get the battle system working with all it's basic features. Then I want to implement the experience, leveling and loot system, turning the game into an infinite series of random fights. At which point I'd probably work on teh bassic GtkD GUI. After that I'm planning on working on the curio system turning the game into a series of alternating battles and curios. then a shop system for resting, buying and selling items and replacing party members with new ones. After that I want to work on teh basic guild functions. Transitioning the game from an infinite series of fuights, curious, and shops into one where you take quests, go a linear numgber of tiles which may be fights, curios or empty, and then return to where you have shops.
+My plan right now is to get the battle system working with all it's basic features. Then I want to implement the experience, leveling and loot system, turning the game into an infinite series of random fights. At which point I'd probably work on the bassic GtkD GUI. After that I'm planning on working on the curio system turning the game into a series of alternating battles and curios. then a shop system for resting, buying and selling items and replacing party members with new ones. After that I want to work on teh basic guild functions. Transitioning the game from an infinite series of fuights, curious, and shops into one where you take quests, go a linear numgber of tiles which may be fights, curios or empty, and then return to where you have shops.
 
 After that I think it would be time to work on the map system, probably dungeons first so that things aren't all stright linear shots anymore. Then the overworld map can be worked on. Once multiple towns can be generated caravan quests, raids and similar can get implemented. After that the whole story can come together and the project will be effectively finished.
 
+I want it to be fully accessible for the blind and visually impaired (like me) and will be doing absolutely no graphical work as a result. I will code a basic GUI using GtkD mainly for direct keyboard input and to provide others a place to hook into for graphics and sound output. I will initially use Espeak to provide audio feedback for accessibility. But I wouldn't mind expanding the system to be compatible with existing screen readers and similar later. But I will be doning no advanced sound work beyond that. If you guys want it to look fancy and have cool music and stuff, that's on you to create and implement.
 
 CONTACT:
 
