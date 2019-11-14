@@ -1,11 +1,102 @@
 import std.stdio;
 import std.json;
 
-struct Mob
+class Mob
 {
-  import mobdefs;
-  import equipment;
+  string name;
+
+  int Pattack;
+  int Mattack;
+  int Pdefense;
+  int Mdefense;
+  int speed;
+  int agility;
   
+  int[2] health;
+  int[2] stamina;
+  int[2] mana;
+
+  this(ref JSONValue master, string entry, int lvl)
+  {
+    auto dict = master[entry];
+    alias C = statCalc;
+  
+    this.Pattack = C(dict["Pattack"], lvl);
+    this.Mattack = C(dict["Mattack"], lvl);
+    this.Pdefense = C(dict["Pdefense"], lvl);
+    this.Mdefense = C(dict["Mdefense"], lvl);
+    this.speed = C(dict["speed"], lvl);
+    this.agility = C(dict["agility"], lvl);
+    
+    this.health = C(dict["health"], lvl);
+    this.stamina = C(dict["stamina"], lvl);
+    this.mana = C(dict["mana"], lvl);
+
+  }
+
+  int statCalc (ref JSONValue a, int lv)
+  {
+    import std.random : uniform;
+    import std.conv : to;
+    import std.stdio : writeln;
+    
+    //writeln("converting to array");
+    auto value = a.array;
+    int[] var;
+    
+    foreach(number; value)
+    {
+      var ~= to!int(number.toString);
+    }
+    
+    int mod = var[1] * lv;
+    int rand = uniform(1, mod + 1);
+  //    writeln("var[1]: ",var[1]);
+  //    writeln("lv: ", lv);
+  //    writeln("mod: ", mod);
+  //    writeln("rand: ", rand);
+    return var[0] + rand;
+  }
+
+}
+
+class Hero : _Mob
+{
+  string job;
+  int level;
+
+  string MainHand;
+  string OffHand;
+  string Body;
+  string Head;
+  string Misc;
+
+  int exp;
+  int NEXTexp;
+
+  this(ref JSONValue master, string entry, int lvl)
+  {
+    super(master, entry, lvl);
+
+    auto dict = master[entry];
+    
+    this.job = dict["job"];
+    this.level = lvl;
+
+    this.MainHand = dict["MainHand"].toString;
+    this.OffHand = dict["OffHand"].toString;
+    this.Body = dict["Body"].toString;
+    this.Head = dict["Head"].toString;
+    this.Misc = dict["Misc"].toString;
+
+    this.exp = (lvl - 1) * 1000;
+    this.NEXTexp = this.exp + (lvl * 1000);
+  }  
+}
+
+/*
+struct Mob
+{  
   string job;
   string name;
   int level;
@@ -31,8 +122,9 @@ struct Mob
   int NEXTexp;
 
 }
+*/
 
-Mob createMob(JSONValue master, string entry, int lvl)
+Mob createMob(ref JSONValue master, string entry, int lvl)
 {
   import std.stdio : writeln;
   import JSONConvert;
