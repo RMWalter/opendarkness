@@ -4,6 +4,7 @@ import std.json;
 class Mob
 {
   string name;
+  string job;
 
   int Pattack;
   int Mattack;
@@ -20,7 +21,10 @@ class Mob
   {
     auto dict = master[entry];
     alias C = statCalc;
-  
+
+    this.name = dict["name"].toString;
+    this.job = dict["job"].toString;
+      
     this.Pattack = C(dict["Pattack"], lvl);
     this.Mattack = C(dict["Mattack"], lvl);
     this.Pdefense = C(dict["Pdefense"], lvl);
@@ -57,10 +61,9 @@ class Mob
   //    writeln("rand: ", rand);
     return var[0] + rand;
   }
-
 }
 
-class Hero : _Mob
+class Hero : Mob
 {
   string job;
   int level;
@@ -74,13 +77,15 @@ class Hero : _Mob
   int exp;
   int NEXTexp;
 
-  this(ref JSONValue master, string entry, int lvl)
+  this(ref JSONValue master, string entry, string name, int lvl)
   {
     super(master, entry, lvl);
 
     auto dict = master[entry];
+
+    this.name = name;
     
-    this.job = dict["job"];
+    this.job = dict["job"].toString;
     this.level = lvl;
 
     this.MainHand = dict["MainHand"].toString;
@@ -89,8 +94,8 @@ class Hero : _Mob
     this.Head = dict["Head"].toString;
     this.Misc = dict["Misc"].toString;
 
-    this.exp = (lvl - 1) * 1000;
-    this.NEXTexp = this.exp + (lvl * 1000);
+    this.exp = 0;
+    this.NEXTexp = lvl * 1000;
   }  
 }
 
@@ -122,7 +127,6 @@ struct Mob
   int NEXTexp;
 
 }
-*/
 
 Mob createMob(ref JSONValue master, string entry, int lvl)
 {
@@ -204,3 +208,4 @@ Mob createMob(ref JSONValue master, string entry, int lvl)
   
   return tempMob;
 }
+*/

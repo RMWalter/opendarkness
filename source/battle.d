@@ -58,7 +58,7 @@ struct Battle
   
     string userinput = readln();
 
-    writeln(userinput);
+//    writeln(userinput);
 
     string action = to!string(userinput[0]);
     int selection = to!int(userinput[1]) - 48;
@@ -140,11 +140,11 @@ struct Battle
   {
     Mob[] slice;
   
-    if(entity.name == "Goblin")
+    if(entity.job == "Monster")
     {
       foreach(unit; enemies)
       {
-        if(unit != entity)
+        if(unit.health[0] <= 0)
         {
           slice ~= unit;
         }
@@ -157,7 +157,7 @@ struct Battle
     {
       foreach(unit; allies)
       {
-        if(unit != entity)
+        if(unit.health[0] <= 0)
         {
           slice ~= unit;
         }
@@ -168,6 +168,8 @@ struct Battle
     }
   }
 }
+
+
 
 /*
   void Calculate_Initiative()

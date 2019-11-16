@@ -20,7 +20,7 @@ string bestiary =
     "Head" : "none",
     "Misc" : ["none","none"]
   },
-"Human" :
+"Troll" :
   {
     "job" : "Monster",
     "name" : "Human",

@@ -1,6 +1,6 @@
 import std.json;
 
-T JSONConvert(T)
+T JSONConvert(T)(value)
 {
 
 }
