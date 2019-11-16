@@ -14,7 +14,6 @@ void testbattle()
   JSONValue mobs = parseJSON(bestiary);
 //  writeln("mobs assigned");
 
-
 //  writeln("assigning heros academy");
   JSONValue heros = parseJSON(academy);
 //  writeln("heros assigned");
