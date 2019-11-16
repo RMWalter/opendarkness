@@ -22,8 +22,8 @@ class Mob
     auto dict = master[entry];
     alias C = statCalc;
 
-    this.name = dict["name"].toString;
-    this.job = dict["job"].toString;
+    this.name = dict["name"].str;
+    this.job = dict["job"].str;
       
     this.Pattack = C(dict["Pattack"], lvl);
     this.Mattack = C(dict["Mattack"], lvl);
@@ -72,7 +72,7 @@ class Hero : Mob
   string OffHand;
   string Body;
   string Head;
-  string Misc;
+  string[2] Misc;
 
   int exp;
   int NEXTexp;
@@ -85,15 +85,16 @@ class Hero : Mob
 
     this.name = name;
     
-    this.job = dict["job"].toString;
+    this.job = dict["job"].str;
     this.level = lvl;
 
-    this.MainHand = dict["MainHand"].toString;
-    this.OffHand = dict["OffHand"].toString;
-    this.Body = dict["Body"].toString;
-    this.Head = dict["Head"].toString;
-    this.Misc = dict["Misc"].toString;
-
+    this.MainHand = dict["MainHand"].str;
+    this.OffHand = dict["OffHand"].str;
+    this.Body = dict["Body"].str;
+    this.Head = dict["Head"].str;
+    this.Misc[0] = dict["Misc"][0].str;
+    this.Misc[1] = dict["Misc"][1].str;
+    
     this.exp = 0;
     this.NEXTexp = lvl * 1000;
   }  

@@ -93,7 +93,7 @@ struct Battle
         break;
     }
   }  
-  void attack(ref Mob attacker, ref Mob defender)
+  void attack(Mob attacker, Mob defender)
   {
     writeln(attacker.name, " Attacks ", defender.name);
 
@@ -136,7 +136,7 @@ struct Battle
     writeln("escape");
   }
 
-  void Graveyard(ref Mob entity)
+  void Graveyard(Mob entity)
   {
     Mob[] slice;
   
@@ -144,7 +144,7 @@ struct Battle
     {
       foreach(unit; enemies)
       {
-        if(unit.health[0] <= 0)
+        if(unit !is entity)
         {
           slice ~= unit;
         }
@@ -157,7 +157,7 @@ struct Battle
     {
       foreach(unit; allies)
       {
-        if(unit.health[0] <= 0)
+        if(unit !is entity)
         {
           slice ~= unit;
         }
