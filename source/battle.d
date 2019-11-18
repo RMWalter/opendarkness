@@ -9,6 +9,24 @@ struct Battle
   Mob[] allies;
   Mob[] enemies;
 
+  void Phase_1(Mob unit)
+  {
+    unit.CalcFlags();
+
+    Phase_2();
+  }
+
+  void Phase_2()
+  {
+  
+    Phase_3();
+  }
+
+  void Phase_3()
+  {
+
+  }
+
   void round()
   {
     while(allies.length > 0 && enemies.length > 0)
@@ -93,6 +111,7 @@ struct Battle
         break;
     }
   }  
+
   void attack(Mob attacker, Mob defender)
   {
     writeln(attacker.name, " Attacks ", defender.name);

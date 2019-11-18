@@ -17,6 +17,8 @@ class Mob
   int[2] stamina;
   int[2] mana;
 
+  string[] COMBAT_FLAGS;
+  
   this(ref JSONValue master, string entry, int lvl)
   {
     auto dict = master[entry];
@@ -36,6 +38,14 @@ class Mob
     this.stamina = C(dict["stamina"], lvl);
     this.mana = C(dict["mana"], lvl);
 
+  }
+
+  void CalcFlags()
+  {
+    foreach(flag; COMBAT_FLAGS)
+    {
+      FLAGS[flag]();
+    }
   }
 
   int statCalc (ref JSONValue a, int lv)
