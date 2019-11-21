@@ -4,28 +4,10 @@ struct Battle
   import mob;
   import std.random : uniform;  
   import std.stdio : writeln, readln;
-  import std.conv: to;
+  import std.conv : to;
   
   Mob[] allies;
   Mob[] enemies;
-
-  void Phase_1(Mob unit)
-  {
-    unit.CalcFlags();
-
-    Phase_2();
-  }
-
-  void Phase_2()
-  {
-  
-    Phase_3();
-  }
-
-  void Phase_3()
-  {
-
-  }
 
   void round()
   {
@@ -36,15 +18,13 @@ struct Battle
       {
         if(enemies.length > 0)
         {
-          turn(actor);
+          Phase_1(actor);
         }
         else
         {
           break;
         }
       }
-
-      
 
       foreach(actor; enemies)
       {
@@ -69,7 +49,21 @@ struct Battle
     }
   }
 
-  void turn(Mob unit)
+  void Phase_1(Mob unit)
+  {
+    unit.CalcFlags();
+
+    if(unit.FLAG["CONDITION"].effect != "NO_TURN")
+    {
+      Phase_2(unit);
+    }
+    else
+    {
+      Phase_3(unit);
+    }
+  }
+
+  void Phase_2(Mob unit)
   {
     import std.string : strip;
     writeln(unit.name, "'s turn", "\n");
@@ -110,7 +104,13 @@ struct Battle
       default:
         break;
     }
+    Phase_3(unit);
   }  
+  
+  void Phase_3(Mob unit)
+  {
+    unit.CalcConditions();
+  }
 
   void attack(Mob attacker, Mob defender)
   {

@@ -6,45 +6,102 @@ class Mob
   string name;
   string job;
 
-  int Pattack;
-  int Mattack;
-  int Pdefense;
-  int Mdefense;
-  int speed;
-  int agility;
+  ubyte[3] mind;
+  ubyte[3] spirit;
+  ubyte[3] perception;
   
-  int[2] health;
-  int[2] stamina;
-  int[2] mana;
+  ubyte[3] strength;
+  ubyte[3] endurance;
+  ubyte[3] agility;
 
-  string[] COMBAT_FLAGS;
+  int[3] Pattack;
+  int[3] Mattack;
+  int[3] Pdefense;
+  int[3] Mdefense;
+
+//  int speed;
   
+  int[3][2] health;
+  int[3][2] stamina;
+  int[3][2] mana;
+    
+  Condition[] condition;
+      
   this(ref JSONValue master, string entry, int lvl)
   {
-    auto dict = master[entry];
     alias C = statCalc;
+    auto D = master[entry];
 
-    this.name = dict["name"].str;
-    this.job = dict["job"].str;
-      
-    this.Pattack = C(dict["Pattack"], lvl);
-    this.Mattack = C(dict["Mattack"], lvl);
-    this.Pdefense = C(dict["Pdefense"], lvl);
-    this.Mdefense = C(dict["Mdefense"], lvl);
-    this.speed = C(dict["speed"], lvl);
-    this.agility = C(dict["agility"], lvl);
+    this.name = D["name"].str;
+    this.job = D["job"].str;
+
+    this.mind = 1;
+    this.spirit = 1;
+    this.perception = 1;
+
+    this,strength = 1;
+    this.endurance = 1;
+    this.agility = C(D["agility"], lvl);
+
+    this.Pattack = C(D["Pattack"], lvl);
+    this.Mattack = C(D["Mattack"], lvl);
+    this.Pdefense = C(D["Pdefense"], lvl);
+    this.Mdefense = C(D["Mdefense"], lvl);
+   
+   // this.speed = C(D["speed"], lvl);
     
-    this.health = C(dict["health"], lvl);
-    this.stamina = C(dict["stamina"], lvl);
-    this.mana = C(dict["mana"], lvl);
+    this.health = C(D["health"], lvl);
+    this.stamina = C(D["stamina"], lvl);
+    this.mana = C(D["mana"], lvl);
 
   }
 
-  void CalcFlags()
+  void Attack(Mob target)
   {
-    foreach(flag; COMBAT_FLAGS)
+
+  }
+
+  void Guard()
+  {   
+    this.Pdefense += 10;
+    this.Mdefense += 10;
+      
+    if(this.stamina[0] < this.stamina[1])
     {
-      FLAGS[flag]();
+      this.stamina++;
+    
+    }
+  }
+
+  void Magic(Mob target)
+  {
+
+  }
+
+  void Item(Mob target)
+  {
+
+  }
+
+  void Escape()
+  {
+
+  }  
+
+  void CalcFlags(string id)
+  {
+    switch(id)
+    {
+      case "COMBAT" :
+        break;
+      case "CONDITION" :
+        break;
+      case "BUFF" :
+        break;
+      case "DEBUFF" :
+        break;
+      default :
+        break;
     }
   }
 
@@ -108,6 +165,17 @@ class Hero : Mob
     this.exp = 0;
     this.NEXTexp = lvl * 1000;
   }  
+
+  void LevelUp()
+  {
+
+  }
+
+  void GainXP()
+  {
+
+  }
+  
 }
 
 /*
