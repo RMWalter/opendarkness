@@ -9,17 +9,18 @@ class Mob
   ubyte[3] mind;
   ubyte[3] spirit;
   ubyte[3] perception;
-  
+  ubyte[3] luck
+    
   ubyte[3] strength;
   ubyte[3] endurance;
   ubyte[3] agility;
+  ubyte[3] speed;
 
   int[3] Pattack;
   int[3] Mattack;
   int[3] Pdefense;
   int[3] Mdefense;
 
-//  int speed;
   
   int[3][2] health;
   int[3][2] stamina;
