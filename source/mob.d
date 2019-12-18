@@ -5,14 +5,15 @@ class Mob
 {
   string name;
   string job;
-
+/*
   ubyte[3] mind;
   ubyte[3] spirit;
   ubyte[3] perception;
-  ubyte[3] luck
+  ubyte[3] luck;
     
   ubyte[3] strength;
   ubyte[3] endurance;
+*/
   ubyte[3] agility;
   ubyte[3] speed;
 
@@ -20,7 +21,6 @@ class Mob
   int[3] Mattack;
   int[3] Pdefense;
   int[3] Mdefense;
-
   
   int[3][2] health;
   int[3][2] stamina;
@@ -35,31 +35,50 @@ class Mob
 
     this.name = D["name"].str;
     this.job = D["job"].str;
-
+/*
     this.mind = 1;
     this.spirit = 1;
     this.perception = 1;
+    this.luck = 1;
 
     this,strength = 1;
     this.endurance = 1;
+*/    
+
     this.agility = C(D["agility"], lvl);
+    this.speed = C(D["speed"], lvl);
 
     this.Pattack = C(D["Pattack"], lvl);
     this.Mattack = C(D["Mattack"], lvl);
     this.Pdefense = C(D["Pdefense"], lvl);
     this.Mdefense = C(D["Mdefense"], lvl);
-   
-   // this.speed = C(D["speed"], lvl);
-    
+       
     this.health = C(D["health"], lvl);
     this.stamina = C(D["stamina"], lvl);
     this.mana = C(D["mana"], lvl);
-
   }
 
-  void Attack(Mob target)
+  void Attack(Mob defender)
   {
+    writeln(this.name, " Attacks ", defender.name);
 
+    if(uniform(1, this.agility) > uniform(0, defender.agility))
+    {
+      int change = uniform(1, this.Pattack + 1) - uniform(0, defender.Pdefense + 1);
+      change = change >= 0 ? change : 0;
+      defender.health[0] -= change;
+
+      writeln(defender.name, " takes ", change, " damage!", "\n" );
+      if(defender.health[0] <= 0)
+      {
+        writeln(defender.name, " dies!", "\n");
+        Graveyard(defender);
+      }
+    }
+    else
+    {
+      writeln(attacker.name, " misses", "\n");
+    }
   }
 
   void Guard()

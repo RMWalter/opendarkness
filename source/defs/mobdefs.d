@@ -18,7 +18,11 @@ string bestiary =
     "OffHand" : "none",
     "Body" : "none",
     "Head" : "none",
-    "Misc" : ["none","none"]
+    "Misc" : ["none","none"],
+    "ENV Flags" : [],
+    "Spells" : [],
+    "expvalue" : "10",
+    "Loot" : []
   },
 "Troll" :
   {
@@ -37,7 +41,11 @@ string bestiary =
     "OffHand" : "none",
     "Body" : "none",
     "Head" : "none",
-    "Misc" : ["none","none"]
+    "Misc" : ["none","none"],
+    "ENV Flags" : [],
+    "Spells" : [],
+    "expvalue" : "10",
+    "Loot" : []
   }  
 }
 `;
