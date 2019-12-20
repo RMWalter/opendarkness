@@ -1,5 +1,6 @@
 import std.stdio;
 import std.json;
+import display;
 
 class Mob
 {
@@ -14,19 +15,25 @@ class Mob
   ubyte[3] strength;
   ubyte[3] endurance;
 */
-  ubyte[3] agility;
-  ubyte[3] speed;
+  ubyte agility;
+  ubyte speed;
 
-  int[3] Pattack;
-  int[3] Mattack;
-  int[3] Pdefense;
-  int[3] Mdefense;
+  int Pattack;
+  int Mattack;
+  int Pdefense;
+  int Mdefense;
   
-  int[3][2] health;
-  int[3][2] stamina;
-  int[3][2] mana;
-    
-  Condition[] condition;
+  int[2] health;
+  int[2] stamina;
+  int[2] mana;
+
+  bool guarding;
+  bool poisoned;
+  bool paralysed;
+  bool sleeping;
+  bool stunned;
+  bool confused;
+  bool burning;
       
   this(ref JSONValue master, string entry, int lvl)
   {
@@ -43,7 +50,7 @@ class Mob
 
     this,strength = 1;
     this.endurance = 1;
-*/    
+*/
 
     this.agility = C(D["agility"], lvl);
     this.speed = C(D["speed"], lvl);
@@ -60,7 +67,7 @@ class Mob
 
   void Attack(Mob defender)
   {
-    writeln(this.name, " Attacks ", defender.name);
+    Display.attacking(defender); //calls Display struct for messege, will fix later
 
     if(uniform(1, this.agility) > uniform(0, defender.agility))
     {
@@ -83,8 +90,7 @@ class Mob
 
   void Guard()
   {   
-    this.Pdefense += 10;
-    this.Mdefense += 10;
+    this.guarding = true;
       
     if(this.stamina[0] < this.stamina[1])
     {
