@@ -1,3 +1,4 @@
+/*
 string FLAGS =
 `
 {
@@ -63,3 +64,4 @@ void CalcStuff(string flag, string attribute, int strength, lambda)
 {
 
 }
+*/

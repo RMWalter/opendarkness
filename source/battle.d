@@ -2,6 +2,7 @@ struct Battle
 {
 
   import mob;
+  import display;
   import std.random : uniform;  
   import std.stdio : writeln, readln;
   import std.conv : to;
@@ -18,6 +19,7 @@ struct Battle
       {
         if(enemies.length > 0)
         {
+          //disp.whos_turn = &actor;
           Phase_1(actor);
         }
         else
@@ -30,7 +32,7 @@ struct Battle
       {
         if(allies.length > 0)
         {
-          attack(actor, allies[uniform(0, allies.length)]);
+          actor.Attack(allies[uniform(0, allies.length)]);
         }
         else
         {
@@ -51,9 +53,8 @@ struct Battle
 
   void Phase_1(Mob unit)
   {
-    unit.CalcFlags();
 
-    if(unit.FLAG["CONDITION"].effect != "NO_TURN")
+    if(unit.stunned == false)
     {
       Phase_2(unit);
     }
@@ -66,7 +67,7 @@ struct Battle
   void Phase_2(Mob unit)
   {
     import std.string : strip;
-    writeln(unit.name, "'s turn", "\n");
+    //disp.turn();
   
     string userinput = readln();
 
@@ -81,78 +82,35 @@ struct Battle
       case "a":      
         if(selection - 1 < enemies.length && enemies[selection - 1].health[0] > 0)
         {
-          attack(unit, enemies[selection - 1]);
+          unit.Attack(enemies[selection - 1]);
         }
         else
         {
           writeln("Invalid Target");
-          turn(unit);
+          Phase_2(unit);
         }
         break;
       case "g":
-        guard();
+        unit.Guard();
         break;
       case "i":
-        item();
+        unit.Item();
         break;
       case "m":
-        magic();
+        unit.Magic();
         break;
       case "e":
-        escape();
+        unit.Escape();
         break;
       default:
         break;
     }
     Phase_3(unit);
-  }  
+  }
   
   void Phase_3(Mob unit)
   {
-    unit.CalcConditions();
-  }
-
-  void attack(Mob attacker, Mob defender)
-  {
-    writeln(attacker.name, " Attacks ", defender.name);
-
-    if(uniform(1, attacker.agility) > uniform(0, defender.agility))
-    {
-      int change = uniform(1, attacker.Pattack + 1) - uniform(0, defender.Pdefense + 1);
-      change = change >= 0 ? change : 0;
-      defender.health[0] -= change;
-
-      writeln(defender.name, " takes ", change, " damage!", "\n" );
-      if(defender.health[0] <= 0)
-      {
-        writeln(defender.name, " dies!", "\n");
-        Graveyard(defender);
-      }
-    }
-    else
-    {
-      writeln(attacker.name, " misses", "\n");
-    }
-  }
-
-  void guard()
-  {
-    writeln("guard");
-  }
-
-  void item()
-  {
-    writeln("item");
-  }
-
-  void magic()
-  {
-    writeln("magic");
-  }
-
-  void escape()
-  {
-    writeln("escape");
+  
   }
 
   void Graveyard(Mob entity)

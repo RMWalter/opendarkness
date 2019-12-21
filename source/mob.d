@@ -4,6 +4,7 @@ import display;
 
 class Mob
 {
+  import std.random : uniform;
   string name;
   string job;
 /*
@@ -15,8 +16,8 @@ class Mob
   ubyte[3] strength;
   ubyte[3] endurance;
 */
-  ubyte agility;
-  ubyte speed;
+  int agility;
+  int speed;
 
   int Pattack;
   int Mattack;
@@ -67,44 +68,52 @@ class Mob
 
   void Attack(Mob defender)
   {
-    Display.attacking(defender); //calls Display struct for messege, will fix later
-
-    if(uniform(1, this.agility) > uniform(0, defender.agility))
+    //Display.attacking(defender); //calls Display struct for message, will fix later
+    if(this.stamina[0] > 0)
     {
-      int change = uniform(1, this.Pattack + 1) - uniform(0, defender.Pdefense + 1);
-      change = change >= 0 ? change : 0;
-      defender.health[0] -= change;
-
-      writeln(defender.name, " takes ", change, " damage!", "\n" );
-      if(defender.health[0] <= 0)
+      this,stamina[0]--;
+      
+      if(uniform(1, this.agility) > uniform(0, defender.agility))
       {
-        writeln(defender.name, " dies!", "\n");
-        Graveyard(defender);
+        int change = uniform(1, this.Pattack + 1) - uniform(0, defender.Pdefense + 1);
+        change = change >= 0 ? change : 0;
+        defender.health[0] -= change;
+
+        writeln(defender.name, " takes ", change, " damage!", "\n" );
+        if(defender.health[0] <= 0)
+        {
+          writeln(defender.name, " dies!", "\n");
+          //Graveyard(defender);
+        }
+      }
+      else
+      {
+        writeln(this.name, " misses", "\n");
       }
     }
     else
     {
-      writeln(attacker.name, " misses", "\n");
+      writeln("not enough stamina");
+      this.Guard();
     }
   }
 
   void Guard()
-  {   
+  {
     this.guarding = true;
-      
+    
     if(this.stamina[0] < this.stamina[1])
     {
-      this.stamina++;
-    
+      this.stamina[0] += 2;
     }
   }
 
-  void Magic(Mob target)
+  void Magic()
   {
-
+    
   }
 
-  void Item(Mob target)
+  void Item()
   {
 
   }
@@ -201,7 +210,6 @@ class Hero : Mob
   {
 
   }
-  
 }
 
 /*

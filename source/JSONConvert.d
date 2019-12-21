@@ -1,6 +1,7 @@
+/*
 import std.json;
 
-auto JSONConvert(JSONvalue value)
+auto JSONConvert(JSONValue value)
 {
   switch(value.type)
   {
@@ -20,3 +21,4 @@ auto JSONConvert(JSONvalue value)
       break;
   }
 }
+*/
