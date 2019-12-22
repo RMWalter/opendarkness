@@ -5,6 +5,40 @@ The thing that holds the party information for travelling
 and the save, load, options buttons and all that. The main menu and status menu sort of thing
 */
 
+struct Anchor
+{
+  import display;
+  import mob;
+
+  Mob[] Party;
+  
+  Display screen = Display();
+
+  static string UserInput()
+  {
+    import std.string : strip;
+    import std.stdio : readln;
+
+    string msg = strip(readln());
+
+    return msg;
+  }
+
+  void Random_Battle(Mob[] b)
+  {
+    import battle;
+
+    Display.Display_Battle BD = Display.Display_Battle();
+
+    Battle fight = Battle(Party, b);
+
+    BD.Party_Hookup(fight.allies);
+    BD.Enemy_Hookup(fight.enemies);
+    
+    fight.round(BD.action_message);
+  }
+}
+
 
 
 struct StatusScreen

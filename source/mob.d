@@ -66,9 +66,12 @@ class Mob
     this.mana = C(D["mana"], lvl);
   }
 
-  void Attack(Mob defender)
+  alias DP = void function(string[])[string];
+
+  void Attack(Mob defender, out DP message)
   {
-    //Display.attacking(defender); //calls Display struct for message, will fix later
+    message["attack"](this.name, defender.name);
+
     if(this.stamina[0] > 0)
     {
       this,stamina[0]--;
@@ -79,27 +82,28 @@ class Mob
         change = change >= 0 ? change : 0;
         defender.health[0] -= change;
 
-        writeln(defender.name, " takes ", change, " damage!", "\n" );
+        message["damaged"](defender.name, to!string(change));
         if(defender.health[0] <= 0)
         {
-          writeln(defender.name, " dies!", "\n");
+          message["killed"](defender.name, " dies!", "\n");
           //Graveyard(defender);
         }
       }
       else
       {
-        writeln(this.name, " misses", "\n");
+        message["missed"](this.name, " misses", "\n");
       }
     }
     else
     {
-      writeln("not enough stamina");
+      message("not enough stamina");
       this.Guard();
     }
   }
 
-  void Guard()
+  void Guard(out DP message)
   {
+    message["guard"](this.name, " put's their guard up.", "\n");
     this.guarding = true;
     
     if(this.stamina[0] < this.stamina[1])

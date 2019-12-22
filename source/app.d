@@ -39,12 +39,17 @@ void testbattle()
   ];
 //  writeln("test heros created");
 
-  Battle test = Battle(good, bad);
+  Anchor test = Anchor(good);
 //  writeln(test.allies);
 //  writeln(test.enemies);
 
-  test.round();
+  test.Random_Battle(bad);
 }
+
+  void testanchor()
+  {
+    Anchor test;
+  }
 
 void main()
 {

@@ -1,12 +1,11 @@
 version(unittest) import fluent.asserts;
-/*
-import std.stdio;
 
 struct Display
 {
+  import std.stdio;
 
-  string[] buffer;
-  string frame = " ";
+  string[] buffer = ["\n"];
+  string frame = "\n";
 
   void update()
   {
@@ -21,34 +20,145 @@ struct Display
   struct Display_Battle
   {
     import mob;
+
+    string*[] Names = [];
+    int*[][] Stats = [[]]; //pointers to name, health, stamina and mana values for each hero
+    string*[] Enemy; //pointers to names of enemies
+//    string* whos_turn; // tracks who's turn it currently is
     
-    Hero[]* Party;
-    Mob[]* Enemy;
-    string* whos_turn;
+    string[] Battle_Menu = ["Attack", "Guard", "Magic", "Item", "Escape"]; // holds possible actions for character
 
-    string[] Hero_display;
-    string[] Enemy_display;
-    string[] Battle_Menu;
+    string[] battle_log = ["battle start!"]; // keeps track of recent actions and their effects
 
-    string[] battle_log;
+    void Party_Hookup(Mob[] group)
+    {    
+      Names.length, Stats.length = group.length;
 
-    string turn()
-    {
-      string msg = &whos_turn + "'s turn";
-      return msg;
+      ubyte x = 0;
+
+      foreach(i; group)
+      {
+        Names ~= &i.name;
+        Stats[x] ~= &i.health[0];
+        Stats[x] ~= &i.health[1];
+        Stats[x] ~= &i.stamina[0];
+        Stats[x] ~= &i.stamina[1];
+        Stats[x] ~= &i.mana[0];
+        Stats[x] ~= &i.mana[1];
+        x++;
+      }
     }
 
-    string attacking(Mob target)
+    void Enemy_Hookup(Mob[] group)
     {
-      string msg = &whos_turn + " attacks " + target.name;
-      return msg;
+      Enemy.length = group.length;
+      
+      foreach(i; group)
+      {
+        Enemy ~= &i.name;
+      }
     }
-  
-    string damaged(Mob Target)
-    {
-      string msg;
 
-      return msg;
+    string Hero_Line(string* name, int*[] stats)
+    {
+      import std.conv : to;
+      
+      string temp = *name ~ " H[" ~ to!string(*stats[0]) ~ "/" ~ to!string(*stats[1]) ~ "] S[" ~ to!string(*stats[2]) ~ "/" ~ to!string(*stats[3]) ~ "] M[" ~ to!string(*stats[4]) ~ "/" ~ to!string(*stats[5]) ~ "]";
+      
+      return temp;
+    }
+
+    string Enemy_Line(string* thug)
+    {
+      string temp = *thug;
+
+      return temp;
+    }
+
+    void Combatants()
+    {
+      string temp;
+      
+      if(Names.length == Enemy.length)
+      {
+        for(ubyte i; i < Names.length; i++)
+        {
+          temp ~= Hero_Line(Names[i], Stats[i]) ~ " " ~ Enemy_Line(Enemy[i]);
+        }  
+      }
+      else if(Enemy.length > Names.length)
+      {
+        
+        for(ubyte i; i < Enemy.length; i++)
+        {
+          if(i < Names.length)
+          {
+            temp ~= Hero_Line(Names[i], Stats[i]) ~ " " ~ Enemy_Line(Enemy[i]); 
+          }
+          temp ~= Enemy_Line(Enemy[i]);
+        }
+      }
+      else
+      {
+
+        for(ubyte i; i < Names.length; i++)
+        {
+          if(i < Enemy.length)
+          {
+            temp ~= Hero_Line(Names[i], Stats[i]) ~ " " ~ Enemy_Line(Enemy[i]);
+          }
+          temp ~= Hero_Line(Names[i], Stats[i]);
+        }
+      }
+      Display.buffer ~ this.temp;
+    }
+
+    void Battle_Buffer()
+    {
+      Display.buffer ~= this.battle_log[$ - 5..$];
+
+      Combatants();
+
+//      Battle_Menu();
+
+//      update();
+    }
+    void function(string[])[string] action_message = ["turn" : &turn, "attack" : &attacking, "missed" : &missed, "guard" : &guarding, "damaged" : &damaged, "killed" : &killed];
+
+    void turn(string[] msg)
+    {
+      string temp = msg[0] + "'s turn";
+      battle_log ~= temp;
+    }
+
+    void attacking(string[] msg)
+    {
+      string temp = msg[0] + " attacks " + msg[1];
+      battle_log ~= temp;
+    }
+
+    void missed(string[] msg)
+    {
+      string temp = msg[0] + " missed";
+      battle_log ~= temp;
+    }
+
+    void guarding(string[] msg)
+    {
+      string temp = msg[0] + " puts their guard up";
+      battle_log ~= temp;
+    }
+
+    void damaged(string[] msg)
+    {
+      string temp = msg[0] + " takes " + msg[1] + " damage";
+      battle_log ~= temp;
+    }
+
+    void killed(string[] msg)
+    {
+      string temp = msg[0] + " dies!";
+      battle_log ~= temp;
     }
   }
   
@@ -94,4 +204,4 @@ unittest
 
   list().should.equal("[1/4]\n1: a\n2: b\n3: c\n4: d\n5:e\n").because("items should be ordered"); 
 }
-*/
+

@@ -10,8 +10,14 @@ struct Battle
   Mob[] allies;
   Mob[] enemies;
 
-  void round()
+  alias DP = void function(string[])[string];
+
+  void round(out DP message)
   {
+    /*
+      includes an associative array of function pointers to pass to each action to      output custom data for the display struct to output custom messages with.
+    */
+    
     while(allies.length > 0 && enemies.length > 0)
     {
     
@@ -20,7 +26,7 @@ struct Battle
         if(enemies.length > 0)
         {
           //disp.whos_turn = &actor;
-          Phase_1(actor);
+          Phase_1(actor, message);
         }
         else
         {
@@ -32,7 +38,7 @@ struct Battle
       {
         if(allies.length > 0)
         {
-          actor.Attack(allies[uniform(0, allies.length)]);
+          actor.Attack(allies[uniform(0, allies.length)], message);
         }
         else
         {
@@ -51,25 +57,27 @@ struct Battle
     }
   }
 
-  void Phase_1(Mob unit)
+  void Phase_1(Mob unit, out DP message)
   {
 
     if(unit.stunned == false)
     {
-      Phase_2(unit);
+      Phase_2(unit, message);
     }
     else
     {
-      Phase_3(unit);
+      Phase_3(unit, message);
     }
   }
 
-  void Phase_2(Mob unit)
+  void Phase_2(Mob unit, out DP message)
   {
+    import std.stdio : readln;
     import std.string : strip;
-    //disp.turn();
+
+    message["turn"]([unit.name]);
   
-    string userinput = readln();
+    string userinput = readln;
 
 //    writeln(userinput);
 
@@ -79,19 +87,19 @@ struct Battle
 
     switch(action)
     {
-      case "a":      
+      case "a":
         if(selection - 1 < enemies.length && enemies[selection - 1].health[0] > 0)
         {
-          unit.Attack(enemies[selection - 1]);
+          unit.Attack(enemies[selection - 1], message);
         }
         else
         {
           writeln("Invalid Target");
-          Phase_2(unit);
+          Phase_2(unit, message);
         }
         break;
       case "g":
-        unit.Guard();
+        unit.Guard(message);
         break;
       case "i":
         unit.Item();
@@ -105,10 +113,10 @@ struct Battle
       default:
         break;
     }
-    Phase_3(unit);
+    Phase_3(unit, message);
   }
   
-  void Phase_3(Mob unit)
+  void Phase_3(Mob unit, out DP message)
   {
   
   }
