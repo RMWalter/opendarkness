@@ -34,8 +34,8 @@ struct Anchor
 
     BD.Party_Hookup(fight.allies);
     BD.Enemy_Hookup(fight.enemies);
-    
-    fight.round(BD.action_message);
+    auto pass = BD.action_message();
+    fight.round(pass);
   }
 }
 

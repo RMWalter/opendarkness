@@ -5,9 +5,15 @@ import display;
 class Mob
 {
   import std.random : uniform;
+
   string name;
   string job;
+
 /*
+  ubyte[][] Attribute;// values for everything from strength to health to whether it's poisoned or not to minor skills. Probably ubyte or ushort types. map with enums and separate with unions for efficiency.
+
+  static enum[] ID; used with Attributes to find exact stats.
+
   ubyte[3] mind;
   ubyte[3] spirit;
   ubyte[3] perception;
@@ -16,17 +22,17 @@ class Mob
   ubyte[3] strength;
   ubyte[3] endurance;
 */
-  int agility;
-  int speed;
+  ubyte agility;
+  ubyte speed;
 
-  int Pattack;
-  int Mattack;
-  int Pdefense;
-  int Mdefense;
+  ubyte Pattack;
+  ubyte Mattack;
+  ubyte Pdefense;
+  ubyte Mdefense;
   
-  int[2] health;
-  int[2] stamina;
-  int[2] mana;
+  ushort[2] health;
+  ushort[2] stamina;
+  ushort[2] mana;
 
   bool guarding;
   bool poisoned;
@@ -66,67 +72,13 @@ class Mob
     this.mana = C(D["mana"], lvl);
   }
 
-  alias DP = void function(string[])[string];
+//  alias DP = void delegate(string[])[string];
 
-  void Attack(Mob defender, out DP message)
+  uint stat_roll(ref uint stat)
   {
-    message["attack"](this.name, defender.name);
-
-    if(this.stamina[0] > 0)
-    {
-      this,stamina[0]--;
-      
-      if(uniform(1, this.agility) > uniform(0, defender.agility))
-      {
-        int change = uniform(1, this.Pattack + 1) - uniform(0, defender.Pdefense + 1);
-        change = change >= 0 ? change : 0;
-        defender.health[0] -= change;
-
-        message["damaged"](defender.name, to!string(change));
-        if(defender.health[0] <= 0)
-        {
-          message["killed"](defender.name, " dies!", "\n");
-          //Graveyard(defender);
-        }
-      }
-      else
-      {
-        message["missed"](this.name, " misses", "\n");
-      }
-    }
-    else
-    {
-      message("not enough stamina");
-      this.Guard();
-    }
+    return uniform(0, stat);
   }
-
-  void Guard(out DP message)
-  {
-    message["guard"](this.name, " put's their guard up.", "\n");
-    this.guarding = true;
-    
-    if(this.stamina[0] < this.stamina[1])
-    {
-      this.stamina[0] += 2;
-    }
-  }
-
-  void Magic()
-  {
-    
-  }
-
-  void Item()
-  {
-
-  }
-
-  void Escape()
-  {
-
-  }  
-
+  
   void CalcFlags(string id)
   {
     switch(id)

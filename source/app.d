@@ -46,11 +46,6 @@ void testbattle()
   test.Random_Battle(bad);
 }
 
-  void testanchor()
-  {
-    Anchor test;
-  }
-
 void main()
 {
   testbattle();
