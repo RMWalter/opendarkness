@@ -2,28 +2,22 @@ version(unittest) import fluent.asserts;
 
 struct Display
 {
-  import std.stdio;
+  import std.stdio : writeln;
 
-  string[] buffer = ["\n"];
-  string frame = "\n";
+  string frame;
 
   void update()
   {
-    foreach(i; buffer)
-    {
-      frame ~= i;
-      frame ~= "\n";
-    }
-    buffer = ["\n"];
     writeln(frame);
-    frame = "\n";
   }
 }
+
   class Display_Battle
   {
     import battle;
-
-    static struct C_Vital // Vital battle data of a given character
+    import mob;
+    
+    static struct C_Vital // Vital battle data of a given character.
     {
       import std.conv : to;
     
@@ -32,36 +26,48 @@ struct Display
       int*[2] Stamina;
       int*[2] Mana;
 
-      string statDisplay(int[2] stat)
+      string statDisplay(int[2] stat, char args[])
       {
-        GLYPH;
-        OPEN;
-        SEPARATOR;
-        CLOSE;
+        GLYPH = args[0] ? args[0] : '#';
+        OPEN = args[1] ? args[] : '[';
+        SEPARATOR = args[2] ? args[2] : '/';
+        CLOSE = args[3] ? args[3] : ']';
         
         return GLYPH ~ OPEN ~ to!string(stat[0]) ~ SEPARATOR ~ to!string(stat[1]) ~ CLOSE;
       }
 
+      unittest
+      {
+        int[2] test = [20,25];
+        statDisplay(test).Should.Equal("#[20/25]").Because("default values used")
+      }
+      unittest
+      {
+        int[2] test = [20,25];
+        statDisplay(test, ['T','<','|','>']).Should.Equal("T<20|25>").Because("optional parameters set");        
+      }
+
       @property string H_Val()
       {
-        return " H[" ~ to!string(*Health[0]) ~ "/" ~ to!string(*Health[1]) ~ "]";
+        return statDisplay(Health, ['H']);
       }
 
       @property string S_Val()
       {
-        return " S[" ~ to!string(*Stamina[0]) ~ "/" ~ to!string(*Stamina[1]) ~ "]";
+        return statDisplay(Stamina, ['S']);
+
       }
 
       @property string M_Val()
       {
-        return " M[" ~ to!string(*Mana[0]) ~ "/" ~ to!string(*Mana[1]) ~ "]";
+        return statDisplay(Mana, ['M']);
       }
     }
 
     C_Vital[] CS; //pointers to name, health, stamina and mana values for each hero.
     string*[] Enemy; //pointers to names of enemies
 //    string* whos_turn; // tracks who's turn it currently is.
-    
+
     string[] Battle_Menu = ["Attack", "Guard", "Magic", "Item", "Escape"]; // holds possible actions for character.
 
     string[] battle_log = ["battle start!"]; // keeps track of recent actions and their effects.
