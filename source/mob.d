@@ -6,26 +6,33 @@ abstract class Mob
   import std.random : uniform;
 
   string name;
+
+  this()
+  {
+    this.name = "NULL";
+  }
 }
 
 
 class FF_Mob : Mob
 {
-  string job;
+  // old school final fantasy stye mob, has same types of stats and abilities, intended for use in similar styled games.
+  
+  string job; // the mob's class, determines stats, AI behaviour if applicable, and abilities. Example: fighter, Mage, Healer.
 
   this()
   {
-    super(this);
+    super.this();
+    this.job = "NULL";
   }
-
 }
-  ubyte agility;
-  ubyte speed;
+  ubyte agility; // governs accuracy and evasiveness
+  ubyte speed; // how physically fast a mob can act , move, and similar.
 
-  ubyte Pattack;
-  ubyte Mattack;
-  ubyte Pdefense;
-  ubyte Mdefense;
+  ubyte Pattack; // Physical damage
+  ubyte Mattack; // Magic damage
+  ubyte Pdefense;// Physical defense
+  ubyte Mdefense;// Magic defense
   
   ushort[2] health;
   ushort[2] stamina;
@@ -39,7 +46,7 @@ class FF_Mob : Mob
   bool confused;
   bool burning;
       
-  this(ref JSONValue master, string entry, int lvl)
+  this(inout ref JSONValue master, string entry, int lvl)
   {
     alias C = statCalc;
     auto D = master[entry];
