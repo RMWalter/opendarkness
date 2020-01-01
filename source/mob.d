@@ -1,14 +1,24 @@
 import std.stdio;
 import std.json;
-import display;
 
-class Mob
+abstract class Mob
 {
   import std.random : uniform;
 
   string name;
+}
+
+
+class FF_Mob : Mob
+{
   string job;
 
+  this()
+  {
+    super(this);
+  }
+
+}
 /*
   ubyte[][] Attribute;// values for everything from strength to health to whether it's poisoned or not to minor skills. Probably ubyte or ushort types. map with enums and separate with unions for efficiency.
 
