@@ -19,19 +19,6 @@ class FF_Mob : Mob
   }
 
 }
-/*
-  ubyte[][] Attribute;// values for everything from strength to health to whether it's poisoned or not to minor skills. Probably ubyte or ushort types. map with enums and separate with unions for efficiency.
-
-  static enum[] ID; used with Attributes to find exact stats.
-
-  ubyte[3] mind;
-  ubyte[3] spirit;
-  ubyte[3] perception;
-  ubyte[3] luck;
-    
-  ubyte[3] strength;
-  ubyte[3] endurance;
-*/
   ubyte agility;
   ubyte speed;
 
@@ -59,15 +46,6 @@ class FF_Mob : Mob
 
     this.name = D["name"].str;
     this.job = D["job"].str;
-/*
-    this.mind = 1;
-    this.spirit = 1;
-    this.perception = 1;
-    this.luck = 1;
-
-    this,strength = 1;
-    this.endurance = 1;
-*/
 
     this.agility = C(D["agility"], lvl);
     this.speed = C(D["speed"], lvl);
@@ -128,6 +106,33 @@ class FF_Mob : Mob
   //    writeln("mod: ", mod);
   //    writeln("rand: ", rand);
     return var[0] + rand;
+  }
+}
+
+class OD_Mob: Mob
+{
+
+  ubyte[3] mind;
+  ubyte[3] spirit;
+  ubyte[3] perception;
+  ubyte[3] luck;
+    
+  ubyte[3] strength;
+  ubyte[3] endurance;
+
+
+  this()
+  {
+    super.this()
+    
+    this.mind = 1;
+    this.spirit = 1;
+    this.perception = 1;
+    this.luck = 1;
+
+    this,strength = 1;
+    this.endurance = 1;
+
   }
 }
 
