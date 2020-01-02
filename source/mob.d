@@ -13,17 +13,41 @@ abstract class Mob
   }
 
   uint stat_roll(ref uint stat)
-  {
-    return uniform(0, stat);
+  {// A simple stat roll method
+    return uniform(0, stat + 1);
   }
 
-  uint compound_stat_roll(uint[] Stats, delegate uint(uint[] S) cb)
+  unittest
   {
+    stat_roll(20).Should.Not.Equal(21).Because("That\'s out of range");
+  }
+
+  uint custom_stat_roll(uint Min, uint Max)
+  {// for custom single stat roll ranges.
+  
+    auto min = Min;
+    auto max = Max;
+    
+    return uniform(min, max)
+  }
+
+  unittest
+  {
+    custom_stat_roll(0, 20).Should.Not.Equal(21).Because("That\'s out of range");
+  }
+
+  uint compound_stat_roll(uint[] Stats, function uint(uint[] S) cb)
+  {// used for calculations made from 2 or more stat rolls such as evasion from a combination of speed and agility.
+
     uint[] temp = ()=> foreach(stat; Stats) temp~= stat_roll(stat);
     return cb(temp);
   }
-}
 
+  unittest
+  {
+    compound_stat_roll([5,5], uint(uint[] S) {return S[0] + S[1];}).Should.Not.Equal(11).Because("That\'s out of range");
+  }
+}
 
 class FF_Mob : Mob
 {
@@ -31,12 +55,6 @@ class FF_Mob : Mob
   
   string job; // the mob's class, determines stats, AI behaviour if applicable, and abilities. Example: fighter, Mage, Healer.
 
-  this()
-  {
-    super.this();
-    this.job = "NULL";
-  }
-}
   ubyte agility; // governs accuracy and evasiveness
   ubyte speed; // how physically fast a mob can act , move, and similar.
 
@@ -59,10 +77,11 @@ class FF_Mob : Mob
       
   this(inout ref JSONValue master, string entry, int lvl)
   {
+    
     alias C = statCalc;
     auto D = master[entry];
 
-    this.name = D["name"].str;
+    super.this.name = D["name"].str;
     this.job = D["job"].str;
 
     this.agility = C(D["agility"], lvl);
