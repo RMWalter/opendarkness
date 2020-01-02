@@ -11,12 +11,23 @@ abstract class Mob
   {
     this.name = "NULL";
   }
+
+  uint stat_roll(ref uint stat)
+  {
+    return uniform(0, stat);
+  }
+
+  uint compound_stat_roll(uint[] Stats, delegate uint(uint[] S) cb)
+  {
+    uint[] temp = ()=> foreach(stat; Stats) temp~= stat_roll(stat);
+    return cb(temp);
+  }
 }
 
 
 class FF_Mob : Mob
 {
-  // old school final fantasy stye mob, has same types of stats and abilities, intended for use in similar styled games.
+  // old school final fantasy style mob, has same types of stats and abilities, intended for use in similar styled games.
   
   string job; // the mob's class, determines stats, AI behaviour if applicable, and abilities. Example: fighter, Mage, Healer.
 
@@ -69,10 +80,6 @@ class FF_Mob : Mob
 
 //  alias DP = void delegate(string[])[string];
 
-  uint stat_roll(ref uint stat)
-  {
-    return uniform(0, stat);
-  }
   
   void CalcFlags(string id)
   {
