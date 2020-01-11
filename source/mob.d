@@ -7,45 +7,68 @@ abstract class Mob
 
   string name;
 
-  this()
+  uint[] Attribute; 
+  
+  // Stats and skills in subclassess will be properties associated with values in the array. That way it's easier to create however many stats you want, call them whtever you want, and have them interact however you want.
+
+  this(string Name, uint[] Attr)
   {
-    this.name = "NULL";
+    this.name = Name;
+    this.Attribute = Attr;
   }
 
-  uint stat_roll(ref uint stat)
+  uint roll(uint stat)
   {// A simple stat roll method
-    return uniform(0, stat + 1);
+    return uniform(1, stat + 1);
   }
 
   unittest
   {
-    stat_roll(20).Should.Not.Equal(21).Because("That\'s out of range");
+    roll(20).Should.Not.Equal(21).Because("That\'s out of range");
   }
 
-  uint custom_stat_roll(uint Min, uint Max)
+  uint rollC(uint Min, uint Max)
   {// for custom single stat roll ranges.
   
-    auto min = Min;
-    auto max = Max;
+    uint min = Min;
+    uint max = Max;
     
     return uniform(min, max)
   }
 
   unittest
   {
-    custom_stat_roll(0, 20).Should.Not.Equal(21).Because("That\'s out of range");
+    rollC(0, 20).Should.Not.Equal(21).Because("That\'s out of range");
   }
 
-  uint compound_stat_roll(uint[] Stats, function uint(uint[] S) cb)
+  uint rollX(uint[] Stats, function uint(uint[] S) cb)
   {// used for calculations made from 2 or more stat rolls such as evasion from a combination of speed and agility.
 
-    uint[] temp = ()=> foreach(stat; Stats) temp~= stat_roll(stat);
+    uint[] temp = ()=> foreach(stat; Stats) {temp ~= roll(stat);};
     return cb(temp);
   }
 
   unittest
   {
-    compound_stat_roll([5,5], uint(uint[] S) {return S[0] + S[1];}).Should.Not.Equal(11).Because("That\'s out of range");
+    rollX([5,5], function uint(uint[] S) {return S[0] + S[1];}).Should.Not.Equal(11).Because("That\'s out of range");
+  }
+
+  bool check(uint CR, uint PR)
+  {
+    // used for checks like a reflex save against a trap
+    // CR = Challenge rating
+    // PR = Player Roll
+
+    return PR >= CR ? true : false;
+
+    // Greater than or equal to because its checking if the player MEETS the challenge. Any higher is extra.
+  }
+
+  unittest
+  {
+    check(1, 1).Should.Equal(true).Because("Player roll met the challenge rating");
+    check(1, 2).Should.Equal(true).Because("Player roll beat the challenge rating");
+    check(2, 1).Should.Equal(false).Because("Player roll didn\'t meet the challenge rating");
   }
 }
 
@@ -60,7 +83,8 @@ class FF_Mob : Mob
 
   ubyte Pattack; // Physical damage
   ubyte Mattack; // Magic damage
-  ubyte Pdefense;// Physical defense
+  ub
+  yte Pdefense;// Physical defense
   ubyte Mdefense;// Magic defense
   
   ushort[2] health;
@@ -152,7 +176,6 @@ class OD_Mob: Mob
     
   ubyte[3] strength;
   ubyte[3] endurance;
-
 
   this()
   {
