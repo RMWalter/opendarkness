@@ -2,12 +2,12 @@ version(unittest) import fluent.asserts;
 import std.json;
 import std.conv : to;
 
-auto JSONConvert(JSONValue value)
+auto JSONConvert(inout ref JSONValue value)
 {
   switch(to!string(value.type))
   {
     case "array" :
-      value = value.array;
+    //value = value.array;
       
       switch(to!string(value[0].type))
       {
@@ -41,15 +41,15 @@ auto JSONConvert(JSONValue value)
       }
       break;
     case "integer" :
-      value = value.integer;
+      //value = value.integer;
       return to!int(value);
       break;
     case "uinteger" :
-      value = value.uinteger;
+      //value = value.uinteger;
       return to!uint(value);
       break;
     case "string" :
-      value = value.string;
+      //value = value.string;
       return to!string(value);
       break;
     default:
