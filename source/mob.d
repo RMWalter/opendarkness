@@ -7,9 +7,9 @@ abstract class Mob
 
   string name;
 
-  uint[] Attribute; 
+  uint[] Attribute;
   
-  // Stats and skills in subclassess will be properties associated with values in the array. That way it's easier to create however many stats you want, call them whtever you want, and have them interact however you want.
+  // Stats and skills in subclassess will be properties associated with values in the Attribute array. That way it's easier to create however many stats you want, call them whatever you want, and have them interact however you want.
 
   this()
   {
@@ -80,6 +80,8 @@ class FF_Mob : Mob
   
   string job; // the mob's class, determines stats, AI behaviour if applicable, and abilities. Example: fighter, Mage, Healer.
 
+  int[string[string]] FLAGS;
+/*
   bool guarding;
   bool poisoned;
   bool paralysed;
@@ -87,16 +89,17 @@ class FF_Mob : Mob
   bool stunned;
   bool confused;
   bool burning;
-      
+*/
   this(inout ref JSONValue master, string entry, int lvl)
   {
     super();
 
     alias C = statCalc;
+    alias J = JSONConvert;
     auto D = master[entry];
 
-    this.name = D["name"].str;
-    this.job = D["job"].str;
+    this.name = D["name"].J;
+    this.job = D["job"].J;
 
     this.A[0] = C(D["agility"], lvl);
     this.A[1] = C(D["speed"], lvl);
@@ -181,19 +184,19 @@ class FF_Mob : Mob
     }
   }
 
-  int statCalc (ref JSONValue a, int lv)
+  auto statCalc (ref JSONValue a, int lv)
   {
     import std.random : uniform;
     import std.conv : to;
     import std.stdio : writeln;
     
     //writeln("converting to array");
-    auto value = a.array;
+    auto value = JSONConvert(a);
     int[] var;
     
     foreach(number; value)
     {
-      var ~= to!int(number.toString);
+      var ~= number;
     }
     
     int mod = var[1] * lv;
