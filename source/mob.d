@@ -11,10 +11,10 @@ abstract class Mob
   
   // Stats and skills in subclassess will be properties associated with values in the array. That way it's easier to create however many stats you want, call them whtever you want, and have them interact however you want.
 
-  this(string Name, uint[] Attr)
+  this()
   {
-    this.name = Name;
-    this.Attribute = Attr;
+    this.name = "Name";
+    // this.Attribute = Attr;
   }
 
   uint roll(uint stat)
@@ -75,21 +75,10 @@ abstract class Mob
 class FF_Mob : Mob
 {
   // old school final fantasy style mob, has same types of stats and abilities, intended for use in similar styled games.
+
+  alias A = Attribute;
   
   string job; // the mob's class, determines stats, AI behaviour if applicable, and abilities. Example: fighter, Mage, Healer.
-
-  ubyte agility; // governs accuracy and evasiveness
-  ubyte speed; // how physically fast a mob can act , move, and similar.
-
-  ubyte Pattack; // Physical damage
-  ubyte Mattack; // Magic damage
-  ub
-  yte Pdefense;// Physical defense
-  ubyte Mdefense;// Magic defense
-  
-  ushort[2] health;
-  ushort[2] stamina;
-  ushort[2] mana;
 
   bool guarding;
   bool poisoned;
@@ -101,28 +90,79 @@ class FF_Mob : Mob
       
   this(inout ref JSONValue master, string entry, int lvl)
   {
-    
+    super();
+
     alias C = statCalc;
     auto D = master[entry];
 
-    super.this.name = D["name"].str;
+    this.name = D["name"].str;
     this.job = D["job"].str;
 
-    this.agility = C(D["agility"], lvl);
-    this.speed = C(D["speed"], lvl);
+    this.A[0] = C(D["agility"], lvl);
+    this.A[1] = C(D["speed"], lvl);
 
-    this.Pattack = C(D["Pattack"], lvl);
-    this.Mattack = C(D["Mattack"], lvl);
-    this.Pdefense = C(D["Pdefense"], lvl);
-    this.Mdefense = C(D["Mdefense"], lvl);
+    this.A[2] = C(D["Pattack"], lvl);
+    this.A[3] = C(D["Mattack"], lvl);
+    this.A[4] = C(D["Pdefense"], lvl);
+    this.A[5] = C(D["Mdefense"], lvl);
        
-    this.health = C(D["health"], lvl);
-    this.stamina = C(D["stamina"], lvl);
-    this.mana = C(D["mana"], lvl);
+    this.A[6..7] = C(D["health"], lvl);
+    this.A[8..9] = C(D["stamina"], lvl);
+    this.A[10..11] = C(D["mana"], lvl);
+  }
+
+  @property auto agility()
+  {
+    // governs accuracy and evasiveness
+    return A[0];
+  }
+
+  @property auto speed()
+  {
+    // how physically fast a mob can act , move, and similar.
+    return A[1];
+  }
+  
+  @property auto Pattack()
+  {
+    // Physical damage
+    return A[2];
+  }
+
+  @property auto Mattack()
+  {
+    // Magic damage
+    return A[3];  
+  }
+
+  @property auto Pdefense()
+  {
+    // Physical defense
+    return A[4];
+  }
+
+  @property auto Mdefense()
+  {
+    // Magic defense
+    return A[5];
+  }  
+
+  @property auto health()
+  {
+    return A[6];
+  }
+
+  @property auto stamina()
+  {
+    return A[8];
+  }
+
+  @property auto mana()
+  {
+    return A[10];
   }
 
 //  alias DP = void delegate(string[])[string];
-
   
   void CalcFlags(string id)
   {
