@@ -9,7 +9,7 @@ auto JSONConvert(JSONValue value)
     case "array" :
       value = value.array;
       
-      switch(value[0].type)
+      switch(to!string(value[0].type))
       {
         case "integer" :
           int[] temp;
