@@ -11,10 +11,10 @@ abstract class Mob
   
   // Stats and skills in subclassess will be properties associated with values in the Attribute array. That way it's easier to create however many stats you want, call them whatever you want, and have them interact however you want.
 
-  this()
+  this(string N, uint[] stats)
   {
-    this.name = "Name";
-    // this.Attribute = Attr;
+    this.name = N;
+    this.Attribute = stats;
   }
 
   uint roll(uint stat)
@@ -90,28 +90,10 @@ class FF_Mob : Mob
   bool confused;
   bool burning;
 */
-  this(inout ref JSONValue master, string entry, int lvl)
+  this(uint[] stats, string Name, string Job)
   {
-    super();
-
-    alias C = statCalc;
-    alias J = JSONConvert;
-    auto D = master[entry];
-
-    this.name = D["name"].J;
-    this.job = D["job"].J;
-
-    this.A[0] = C(D["agility"], lvl);
-    this.A[1] = C(D["speed"], lvl);
-
-    this.A[2] = C(D["Pattack"], lvl);
-    this.A[3] = C(D["Mattack"], lvl);
-    this.A[4] = C(D["Pdefense"], lvl);
-    this.A[5] = C(D["Mdefense"], lvl);
-       
-    this.A[6..7] = C(D["health"], lvl);
-    this.A[8..9] = C(D["stamina"], lvl);
-    this.A[10..11] = C(D["mana"], lvl);
+    super(Name, stats);
+    this.job = Job;
   }
 
   @property auto agility()
@@ -165,6 +147,10 @@ class FF_Mob : Mob
     return A[10];
   }
 
+  @property level()
+  {
+    return A[12];
+  }
 //  alias DP = void delegate(string[])[string];
   
   void CalcFlags(string id)
@@ -182,6 +168,32 @@ class FF_Mob : Mob
       default :
         break;
     }
+  }
+
+  uint[] Fill(inout ref JSONValue master, string entry, int lvl)
+  {
+    uint[] temp;
+    alias C = statCalc;
+    alias J = JSONConvert;
+    auto D = master[entry];
+
+    //D["name"].J;
+    //D["job"].J;
+
+    temp[0] = C(D["agility"], lvl);
+    temp[1] = C(D["speed"], lvl);
+
+    temp[2] = C(D["Pattack"], lvl);
+    temp[3] = C(D["Mattack"], lvl);
+    temp[4] = C(D["Pdefense"], lvl);
+    temp[5] = C(D["Mdefense"], lvl);
+       
+    temp[6..7] = C(D["health"], lvl);
+    temp[8..9] = C(D["stamina"], lvl);
+    temp[10..11] = C(D["mana"], lvl);
+    temp[12] = lvl;
+
+    return temp;
   }
 
   auto statCalc (ref JSONValue a, int lv)
