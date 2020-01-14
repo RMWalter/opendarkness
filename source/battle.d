@@ -18,23 +18,48 @@ class FF_Battle
   void round()
   {
     /*
-      includes an associative array of function pointers to pass to each action to      output custom data for the display struct to output custom messages with.
+    PHASE 1
+    
+    Handle condition calculations that happen before a characters turn. Things 
+    like sleep, stun and confusion.
     */
-
     if(unit.stunned == false)
     {
+      /*
+      PHASE 2
+      
+      Handle user input and the resulting character actions.
+
+      Input should be very modular so that it can handle a wide variety of 
+      methods, like pure text input to keybopard event handling with GTK+ or 
+      network input for multiplayer.
+      
+      Action's should be similarly modular, handled as a tree unique to each 
+      character, though most will be teh same. Likewise this should also handle 
+      AI behaviour which can vary from mob to mob.
+
+      Ideally this should be handled with a single pair of functions that are 
+      called here but should be modular in and of themselves to generically 
+      handle all this different behaviour without changing anything here.
+
+      Below is the placeholder function pair to be defined elsewhere.
+      */
+
       action(userinput()); 
-      /* 
-      Need to create action tree class elsewhere to 
-      handle everything from dialogue trees to what actions show up in a 
-      characters move list during battles.
+
+      /*
+      :::NOTE TO SELF:::
+      Need to create action tree class elsewhere to handle everything from 
+      dialogue trees to what actions show up in a characters move list 
+      during battles.
       */
     }
-    else
-    {
-      Phase_3(unit);
-    }
-
+    /*
+    PHASE 3
+    
+    Calculate conditions like poison that do damage or otherwise have their 
+    effect at the end of a characters turn.
+    */
   }
 
   void Phase_2(Mob unit)
@@ -82,11 +107,6 @@ class FF_Battle
         break;
     }
     */
-  
-  void Phase_3(Mob unit)
-  {
-  
-  }
 
   void Graveyard(Mob entity)
   {
