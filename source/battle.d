@@ -20,20 +20,21 @@ class FF_Battle
     /*
       includes an associative array of function pointers to pass to each action to      output custom data for the display struct to output custom messages with.
     */
-  }
-
-
-  void Phase_1(Mob unit)
-  {
 
     if(unit.stunned == false)
     {
-      Phase_2(unit);
+      action(userinput()); 
+      /* 
+      Need to create action tree class elsewhere to 
+      handle everything from dialogue trees to what actions show up in a 
+      characters move list during battles.
+      */
     }
     else
     {
       Phase_3(unit);
     }
+
   }
 
   void Phase_2(Mob unit)
@@ -43,8 +44,9 @@ class FF_Battle
 
 //    message["turn"]([unit.name]);
 
-    string userinput = readln();
-
+    Phase_3(unit);
+  }
+    /*
 //    writeln(userinput);
 
     string action = to!string(userinput[0]);
@@ -79,8 +81,7 @@ class FF_Battle
       default:
         break;
     }
-    Phase_3(unit);
-  }
+    */
   
   void Phase_3(Mob unit)
   {
