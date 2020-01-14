@@ -1,9 +1,10 @@
-import std.stdio;
-import std.json;
+version(unittest) import fluent.asserts;
 
 abstract class Mob
 {
   import std.random : uniform;
+  import std.json;
+  import std.stdio;
 
   string name;
 
@@ -19,12 +20,19 @@ abstract class Mob
 
   uint roll(uint stat)
   {// A simple stat roll method
-    return uniform(1, stat + 1);
+    if(stat > 1)
+    {
+      return uniform(1, stat + 1);
+    }
+    else
+    {
+      return 1;
+    }
   }
 
   unittest
   {
-    roll(20).Should.Not.Equal(21).Because("That\'s out of range");
+    roll(20).Should.Not.Equal(21).Because(`That's out of range`);
   }
 
   uint rollC(uint Min, uint Max)
@@ -33,26 +41,42 @@ abstract class Mob
     uint min = Min;
     uint max = Max;
     
-    return uniform(min, max)
+    if(min < max)
+    {
+      return uniform(min, max + 1)
+    }
+    else
+    {
+      return min;
+    }
   }
 
   unittest
   {
-    rollC(0, 20).Should.Not.Equal(21).Because("That\'s out of range");
+    rollC(0, 20).Should.Not.Equal(21).Because(`That's out of range`);
   }
 
   uint rollX(uint[] Stats, function uint(uint[] S) cb)
   {// used for calculations made from 2 or more stat rolls such as evasion from a combination of speed and agility.
 
-    uint[] temp = ()=> foreach(stat; Stats) {temp ~= roll(stat);};
-    return cb(temp);
+    uint[] temp =  function uint[]()
+    { 
+      uint[] A;
+
+      foreach(stat; Stats) 
+      {
+        A ~= roll(stat);
+      } 
+      return A;
+    }
+      return cb(temp);
   }
 
   unittest
   {
-    rollX([5,5], function uint(uint[] S) {return S[0] + S[1];}).Should.Not.Equal(11).Because("That\'s out of range");
+    rollX([5,5], function uint(uint[] S) {return S[0] + S[1];}).Should.Not.Equal(11).Because(`That's out of range`);
   }
-
+  
   bool check(uint CR, uint PR)
   {
     // used for checks like a reflex save against a trap
@@ -80,7 +104,7 @@ class FF_Mob : Mob
   
   string job; // the mob's class, determines stats, AI behaviour if applicable, and abilities. Example: fighter, Mage, Healer.
 
-  int[string[string]] FLAGS;
+  int[string[string]] FLAGS; // flags for things like conditions, like poison.
 /*
   bool guarding;
   bool poisoned;
@@ -90,7 +114,7 @@ class FF_Mob : Mob
   bool confused;
   bool burning;
 */
-  this(uint[] stats, string Name, string Job)
+  this(string Name, uint[] stats, string Job)
   {
     super(Name, stats);
     this.job = Job;
@@ -219,6 +243,16 @@ class FF_Mob : Mob
   //    writeln("rand: ", rand);
     return var[0] + rand;
   }
+}
+
+unittest
+{
+  uint[13] array = 10;
+  auto test = new FF_Mob("Human", array, "Fighter")
+
+  test.Pattack.Should.Equal(10).Because(`That's what I set it at`);
+  test.name.Should.Equal("Human").Because(`That's what I set it at`);
+  test.job.Should.Equal("Fighter").Because(`That's what I set it at`);
 }
 
 class OD_Mob: Mob
