@@ -1,6 +1,10 @@
-struct Battle
+class FF_Battle
 {
-
+  /*
+   Old school final fantasy turn based battle system. Inteded to be used with 
+   FF_Mob mob classes and subclasses.
+  */
+  
   import mob;
   import std.random : uniform;  
   import std.stdio : writeln, readln;
@@ -38,21 +42,21 @@ struct Battle
     import std.string : strip;
 
 //    message["turn"]([unit.name]);
-  
+
     string userinput = readln();
 
 //    writeln(userinput);
 
     string action = to!string(userinput[0]);
-    int selection = to!int(userinput[1]) - 48;
+    int selection = (to!int(userinput[1]) - 48) - 1;
 //    writeln(typeid(selection), " : ", selection);
 
     switch(action)
     {
       case "a":
-        if(selection - 1 < enemies.length && enemies[selection - 1].health[0] > 0)
+        if(selection < enemies.length && enemies[selection].health[0] > 0)
         {
-          unit.Attack(enemies[selection - 1]);//, message);
+          unit.Attack(enemies[selection]);//, message);
         }
         else
         {
