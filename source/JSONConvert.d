@@ -1,38 +1,46 @@
 version(unittest) import fluent.asserts;
 import std.json;
-import std.conv : to;
 
-auto JSONConvert(inout ref JSONValue value)
+union USON 
 {
+  ubyte[] UBYTEA;
+  int INT;
+  int[] INTA;
+  uint UINT;
+  uint[] UINTA;
+  string STRING;
+  string[] STRINGA;
+}
+
+USON JSONConvert(inout ref JSONValue value)
+{
+  import std.conv : to;
+
+  USON temp;
   switch(to!string(value.type))
   {
     case "array" :
-    //value = value.array;
-      
+    value = value.array;      
       switch(to!string(value[0].type))
       {
         case "integer" :
-          int[] temp;
-
           foreach(i; value)
           {
-            temp ~= to!int(i);
+            temp.INTA ~= to!int(i);
           }
          return temp;
          break;
         case "uinteger" :
-          uint[] temp;
           foreach(i; value)
           {
-            temp ~= to!uint(i);
+            temp.UINTA ~= to!uint(i);
           }
           return temp;
           break;
         case "string" :
-          string[] temp;
           foreach(i; value)
           {
-            temp ~= to!string(i);
+            temp.STRINGA ~= to!string(i);
           }
           return temp;
           break;
@@ -41,16 +49,19 @@ auto JSONConvert(inout ref JSONValue value)
       }
       break;
     case "integer" :
-      //value = value.integer;
-      return to!int(value);
+      value = value.integer;
+      temp.INT = to!int(value);
+      return temp;
       break;
     case "uinteger" :
-      //value = value.uinteger;
-      return to!uint(value);
+      value = value.uinteger;
+      temp.UINT = to!uint(value);
+      return temp;
       break;
     case "string" :
-      //value = value.string;
-      return to!string(value);
+      value = value.string;
+      temp.STRING = to!string(value);
+      return temp;
       break;
     default:
       break;
