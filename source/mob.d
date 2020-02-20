@@ -1,6 +1,6 @@
 version(unittest) import fluent.asserts;
 
-abstract class Mob
+abstract class _Mob
 {
   import std.random : uniform;
   import std.json;
@@ -96,7 +96,7 @@ abstract class Mob
   }
 }
 
-class FF_Mob : Mob
+class TBB_Mob : _Mob
 {
   // old school final fantasy style mob, has same types of stats and abilities, intended for use in similar styled games.
 
@@ -194,7 +194,7 @@ class FF_Mob : Mob
     }
   }
 
-  uint[] Fill(inout ref JSONValue master, string entry, int lvl)
+  uint[] Fill(ref JSONValue master, string entry, int lvl)
   {
     uint[] temp;
     alias C = statCalc;
