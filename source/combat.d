@@ -1,3 +1,4 @@
-auto attack(_Mob mob)
+auto attack(_Mob mob);
 auto guard(_Mob mob);
-auto escape(_mob mob);
+auto escape(_Mob mob);
+auto item(_Mob mob);
