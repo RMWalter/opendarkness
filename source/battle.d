@@ -1,17 +1,52 @@
-class FF_Battle
+/*
+For defining constrained battle systems for games where there is a stark 
+difference between when a player is in or out of combat.
+
+EXAMPLES
+
+A turn based battle system where a party of heros fights one party of 
+monsters lined up on each side of a field.
+
+A chess like battle system where each character moves and acts independently based on the turn order and range to other units.
+
+LEGEND
+
+Time:
+
+Turn Based - charactersd act one at a time.
+
+Real - all actions for all character happen based on player input 
+and a common field time.
+
+Hybrid - characters generally act based on turn order or initiative 
+bars, but players can provide inputs dynamically to affect results.
+
+Field:
+Static - characters are rooted in place and cannot move
+
+Dynamic - characters can move freely around the stage. Range, manual 
+aim and obstacles may affect actions.
+
+*/
+
+version(unittest) import fluent.asserts;
+
+class TB_SF_Battle
 {
   /*
-   Old school final fantasy turn based battle system. Inteded to be used with 
-   FF_Mob mob classes and subclasses.
+   Turn Based Static Field Battle system
+
+   Generates a static battlefield that contains one party of one or more
+   heros and one or more enemies. Each character takes turns acting, such 
+   as attacking and using items.
   */
   
   import mob;
-  import std.random : uniform;  
-  import std.stdio : writeln, readln;
+  import std.random : uniform;
   import std.conv : to;
   
-  Mob[] allies;
-  Mob[] enemies;
+  auto allies;
+  auto enemies;
 
 //  alias DP = void delegate(string[])[string];
 
