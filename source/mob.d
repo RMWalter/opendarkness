@@ -3,19 +3,49 @@ version(unittest) import fluent.asserts;
 abstract class _Mob
 {
   import std.random : uniform;
-  import std.json;
-  import std.stdio;
 
-  string name;
+  ubyte[] Attribute;
 
-  uint[] Attribute;
+  union STAT
+  {
+    ubyte[] UA;
+    string TEXT;
+    ushort S;
+    uint I;
+    ulong L;
+  }
   
   // Stats and skills in subclassess will be properties associated with values in the Attribute array. That way it's easier to create however many stats you want, call them whatever you want, and have them interact however you want.
 
-  this(string N, uint[] stats)
+  this(ubyte[] values)
   {
-    this.name = N;
-    this.Attribute = stats;
+    this.Attribute = values;
+  }
+
+  template assign(T)
+  {
+    ubyte[] assign(T input)
+    {
+      STAT temp = input;
+      return temp.UA;
+    }
+  }
+
+  template(T) build
+  {
+    ubyte[] build(T stat, out int[] ptr)
+    {
+      ubyte[] temp;
+      int[] pos = 0;
+
+      foreach(i; stat)
+      {
+        temp ~= assign(i);
+        pos ~= temp.length - 1;
+      }
+      
+      return temp;
+    }
   }
 
   uint roll(uint stat)
@@ -96,13 +126,29 @@ abstract class _Mob
   }
 }
 
+template mixin() TBB_Class
+{
+  class TBB_Mob : _Mob
+  {
+    mixin property_maker()
+    {
+      @property VAL()
+      {
+
+      }
+    }
+  }
+}
+
 class TBB_Mob : _Mob
 {
   // old school final fantasy style mob, has same types of stats and abilities, intended for use in similar styled games.
 
   alias A = Attribute;
+
+  immutable static string[] _JobDefs;
   
-  string job; // the mob's class, determines stats, AI behaviour if applicable, and abilities. Example: fighter, Mage, Healer.
+  string job; // the mob's class, determines stats, AI behaviour if applicable, and abilities. Example: fighter, Mage, Healer. Should be set using the _JobDefs list.
 
   int[string[string]] FLAGS; // flags for things like conditions, like poison.
 /*
@@ -154,7 +200,7 @@ class TBB_Mob : _Mob
   {
     // Magic defense
     return A[5];
-  }  
+  }
 
   @property auto health()
   {
@@ -281,8 +327,10 @@ class OD_Mob: Mob
   }
 }
 
-class Hero : Mob
+class Hero : _Mob
 {
+  immutable static string[] _RaceDefs;
+
   string job;
   int level;
 
