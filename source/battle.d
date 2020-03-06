@@ -37,7 +37,7 @@ class TB_SF_Battle
    Turn Based Static Field Battle system
 
    Generates a static battlefield that contains one party of one or more
-   heros and one or more enemies. Each character takes turns acting, such 
+   heros versus one or more enemies. Each character takes turns acting, such 
    as attacking and using items.
   */
   
@@ -58,6 +58,7 @@ class TB_SF_Battle
     Handle condition calculations that happen before a characters turn. Things 
     like sleep, stun and confusion.
     */
+
     if(unit.stunned == false)
     {
       /*
@@ -70,7 +71,7 @@ class TB_SF_Battle
       network input for multiplayer.
       
       Action's should be similarly modular, handled as a tree unique to each 
-      character, though most will be teh same. Likewise this should also handle 
+      character, though most will be the same. Likewise this should also handle 
       AI behaviour which can vary from mob to mob.
 
       Ideally this should be handled with a single pair of functions that are 
@@ -89,6 +90,7 @@ class TB_SF_Battle
       during battles.
       */
     }
+
     /*
     PHASE 3
     
