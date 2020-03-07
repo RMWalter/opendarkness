@@ -48,6 +48,7 @@ abstract class _Mob
     }
   }
 
+/*
   uint roll(uint stat)
   {// A simple stat roll method
     if(stat > 1)
@@ -124,9 +125,12 @@ abstract class _Mob
     check(1, 2).Should.Equal(true).Because("Player roll beat the challenge rating");
     check(2, 1).Should.Equal(false).Because("Player roll didn\'t meet the challenge rating");
   }
+
+*/
+
 }
 
-template mixin() TBB_Class
+template mixin TBB_Class()
 {
   class TBB_Mob : _Mob
   {
