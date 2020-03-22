@@ -12,21 +12,17 @@ class Node
   series of other nodes. Like the spells in a spell book or consumable items in 
   inventory.
   */
-     
-  auto head;
-  auto prev;
-  auto branch;
 
-  this()
+  immutable Node[] branch;
+
+  this(Node[] N)
   {
-
+    this.branch = &hookup(N)
   }
 
-  hookup(Node H, Node P, Node[] B)
+  delegate Node[] hookup(Node[] B)
   {
-    this.head = H;
-    this.prev = P;
-    this.branch = B;
+    return B;
   }
 }
 
@@ -43,21 +39,43 @@ class Tree
   */
 }
 
-class Dialogue : Node
+class DialogueNode : Node
 {
-  string message; //what is said when you get to this node
-  auto condition; //condition that needs to be met to progress to this node
-  string[] say; //What you can say
-  
-  this(string M, auto C = null, string[] S)
+  static struct DialogueCondition
+  {
+    immutable string type;
+    immutable uint magnitude;
+  }
+
+  immutable string message; //what is said when you get to this node
+  DialogueCondition[] condition; //condition(s) that needs to be met to progress to this node
+  bool visible; //Whether this choice is visible or not
+    
+  this(string M)
   {
     super();
     
     this.message = M;
-    this.condition = C;
-    this.say = S;
+  }
+
+  @property auto visible_choices()
+  {
+    /*
+    returns the visible dialgoue choices after evaluating their relevant condition
+    */
   }
 }
+
+class MenuNode : Node
+{
+
+}
+
+class MapNode : Node
+{
+
+}
+
 
 void main()
 {
