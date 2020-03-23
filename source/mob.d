@@ -1,43 +1,161 @@
-import std.stdio;
-import std.json;
+version(unittest) import fluent.asserts;
 
-abstract class Mob
+abstract class _Mob
 {
   import std.random : uniform;
 
-  string name;
+  ubyte[] Attribute;
 
-  this()
+  union STAT
   {
-    this.name = "NULL";
+    ubyte[] UA;
+    string TEXT;
+    ushort S;
+    uint I;
+    ulong L;
   }
+  
+  // Stats and skills in subclassess will be properties associated with values in the Attribute array. That way it's easier to create however many stats you want, call them whatever you want, and have them interact however you want.
+
+  this(ubyte[] values)
+  {
+    this.Attribute = values;
+  }
+
+  template assign(T)
+  {
+    ubyte[] assign(T input)
+    {
+      STAT temp = input;
+      return temp.UA;
+    }
+  }
+
+  template(T) build
+  {
+    ubyte[] build(T stat, out int[] ptr)
+    {
+      ubyte[] temp;
+      int[] pos = 0;
+
+      foreach(i; stat)
+      {
+        temp ~= assign(i);
+        pos ~= temp.length - 1;
+      }
+      
+      return temp;
+    }
+  }
+
+/*
+  uint roll(uint stat)
+  {// A simple stat roll method
+    if(stat > 1)
+    {
+      return uniform(1, stat + 1);
+    }
+    else
+    {
+      return 1;
+    }
+  }
+
+  unittest
+  {
+    roll(20).Should.Not.Equal(21).Because(`That's out of range`);
+  }
+
+  uint rollC(uint Min, uint Max)
+  {// for custom single stat roll ranges.
+  
+    uint min = Min;
+    uint max = Max;
+    
+    if(min < max)
+    {
+      return uniform(min, max + 1)
+    }
+    else
+    {
+      return min;
+    }
+  }
+
+  unittest
+  {
+    rollC(0, 20).Should.Not.Equal(21).Because(`That's out of range`);
+  }
+
+  uint rollX(uint[] Stats, function uint(uint[] S) cb)
+  {// used for calculations made from 2 or more stat rolls such as evasion from a combination of speed and agility.
+
+    uint[] temp =  function uint[]()
+    { 
+      uint[] A;
+
+      foreach(stat; Stats) 
+      {
+        A ~= roll(stat);
+      } 
+      return A;
+    }
+      return cb(temp);
+  }
+
+  unittest
+  {
+    rollX([5,5], function uint(uint[] S) {return S[0] + S[1];}).Should.Not.Equal(11).Because(`That's out of range`);
+  }
+  
+  bool check(uint CR, uint PR)
+  {
+    // used for checks like a reflex save against a trap
+    // CR = Challenge rating
+    // PR = Player Roll
+
+    return PR >= CR ? true : false;
+
+    // Greater than or equal to because its checking if the player MEETS the challenge. Any higher is extra.
+  }
+
+  unittest
+  {
+    check(1, 1).Should.Equal(true).Because("Player roll met the challenge rating");
+    check(1, 2).Should.Equal(true).Because("Player roll beat the challenge rating");
+    check(2, 1).Should.Equal(false).Because("Player roll didn\'t meet the challenge rating");
+  }
+
+*/
+
 }
 
-
-class FF_Mob : Mob
+template mixin TBB_Class()
 {
-  // old school final fantasy stye mob, has same types of stats and abilities, intended for use in similar styled games.
-  
-  string job; // the mob's class, determines stats, AI behaviour if applicable, and abilities. Example: fighter, Mage, Healer.
-
-  this()
+  class TBB_Mob : _Mob
   {
-    super.this();
-    this.job = "NULL";
+    mixin property_maker()
+    {
+      @property VAL()
+      {
+
+      }
+    }
   }
 }
-  ubyte agility; // governs accuracy and evasiveness
-  ubyte speed; // how physically fast a mob can act , move, and similar.
 
-  ubyte Pattack; // Physical damage
-  ubyte Mattack; // Magic damage
-  ubyte Pdefense;// Physical defense
-  ubyte Mdefense;// Magic defense
+class TBB_Mob : _Mob
+{
+  // old school final fantasy style mob, has same types of stats and abilities, intended for use in similar styled games.
+
+  alias A = Attribute;
+
+  immutable static string[] _JobDefs;
   
-  ushort[2] health;
-  ushort[2] stamina;
-  ushort[2] mana;
+  string job; // the mob's class, determines stats, AI behaviour if applicable, and abilities. Example: fighter, Mage, Healer. Should be set using the _JobDefs list.
 
+  int[string[string]] FLAGS; // flags for things like conditions, like poison.
+/*
   bool guarding;
   bool poisoned;
   bool paralysed;
@@ -45,34 +163,69 @@ class FF_Mob : Mob
   bool stunned;
   bool confused;
   bool burning;
-      
-  this(inout ref JSONValue master, string entry, int lvl)
+*/
+  this(string Name, uint[] stats, string Job)
   {
-    alias C = statCalc;
-    auto D = master[entry];
-
-    this.name = D["name"].str;
-    this.job = D["job"].str;
-
-    this.agility = C(D["agility"], lvl);
-    this.speed = C(D["speed"], lvl);
-
-    this.Pattack = C(D["Pattack"], lvl);
-    this.Mattack = C(D["Mattack"], lvl);
-    this.Pdefense = C(D["Pdefense"], lvl);
-    this.Mdefense = C(D["Mdefense"], lvl);
-       
-    this.health = C(D["health"], lvl);
-    this.stamina = C(D["stamina"], lvl);
-    this.mana = C(D["mana"], lvl);
+    super(Name, stats);
+    this.job = Job;
   }
 
+  @property auto agility()
+  {
+    // governs accuracy and evasiveness
+    return A[0];
+  }
+
+  @property auto speed()
+  {
+    // how physically fast a mob can act , move, and similar.
+    return A[1];
+  }
+  
+  @property auto Pattack()
+  {
+    // Physical damage
+    return A[2];
+  }
+
+  @property auto Mattack()
+  {
+    // Magic damage
+    return A[3];  
+  }
+
+  @property auto Pdefense()
+  {
+    // Physical defense
+    return A[4];
+  }
+
+  @property auto Mdefense()
+  {
+    // Magic defense
+    return A[5];
+  }
+
+  @property auto health()
+  {
+    return A[6];
+  }
+
+  @property auto stamina()
+  {
+    return A[8];
+  }
+
+  @property auto mana()
+  {
+    return A[10];
+  }
+
+  @property level()
+  {
+    return A[12];
+  }
 //  alias DP = void delegate(string[])[string];
-
-  uint stat_roll(ref uint stat)
-  {
-    return uniform(0, stat);
-  }
   
   void CalcFlags(string id)
   {
@@ -91,19 +244,45 @@ class FF_Mob : Mob
     }
   }
 
-  int statCalc (ref JSONValue a, int lv)
+  uint[] Fill(ref JSONValue master, string entry, int lvl)
+  {
+    uint[] temp;
+    alias C = statCalc;
+    alias J = JSONConvert;
+    auto D = master[entry];
+
+    //D["name"].J;
+    //D["job"].J;
+
+    temp[0] = C(D["agility"], lvl);
+    temp[1] = C(D["speed"], lvl);
+
+    temp[2] = C(D["Pattack"], lvl);
+    temp[3] = C(D["Mattack"], lvl);
+    temp[4] = C(D["Pdefense"], lvl);
+    temp[5] = C(D["Mdefense"], lvl);
+       
+    temp[6..7] = C(D["health"], lvl);
+    temp[8..9] = C(D["stamina"], lvl);
+    temp[10..11] = C(D["mana"], lvl);
+    temp[12] = lvl;
+
+    return temp;
+  }
+
+  auto statCalc (ref JSONValue a, int lv)
   {
     import std.random : uniform;
     import std.conv : to;
     import std.stdio : writeln;
     
     //writeln("converting to array");
-    auto value = a.array;
+    auto value = JSONConvert(a);
     int[] var;
     
     foreach(number; value)
     {
-      var ~= to!int(number.toString);
+      var ~= number;
     }
     
     int mod = var[1] * lv;
@@ -116,6 +295,16 @@ class FF_Mob : Mob
   }
 }
 
+unittest
+{
+  uint[13] array = 10;
+  auto test = new FF_Mob("Human", array, "Fighter")
+
+  test.Pattack.Should.Equal(10).Because(`That's what I set it at`);
+  test.name.Should.Equal("Human").Because(`That's what I set it at`);
+  test.job.Should.Equal("Fighter").Because(`That's what I set it at`);
+}
+
 class OD_Mob: Mob
 {
 
@@ -126,7 +315,6 @@ class OD_Mob: Mob
     
   ubyte[3] strength;
   ubyte[3] endurance;
-
 
   this()
   {
@@ -143,8 +331,10 @@ class OD_Mob: Mob
   }
 }
 
-class Hero : Mob
+class Hero : _Mob
 {
+  immutable static string[] _RaceDefs;
+
   string job;
   int level;
 
@@ -189,114 +379,3 @@ class Hero : Mob
 
   }
 }
-
-/*
-struct Mob
-{  
-  string job;
-  string name;
-  int level;
-  
-  int Pattack;
-  int Mattack;
-  int Pdefense;
-  int Mdefense;
-  int speed;
-  int agility;
-  
-  int[2] health;
-  int[2] stamina;
-  int[2] mana;
-
-  string MainHand;
-  string OffHand;
-  string Body;
-  string Head;
-  string Misc;
-
-  int exp;
-  int NEXTexp;
-
-}
-
-Mob createMob(ref JSONValue master, string entry, int lvl)
-{
-  import std.stdio : writeln;
-  import JSONConvert;
-  
-//  writeln("starting createMob, importing");
-
-//  writeln("importing dict");
-//  writeln(master[entry].toString);
-  auto dict = master[entry];
-//  writeln("dict imported");
-  
-//  writeln("aliasing statCalc");
-  alias C = statCalc;
-//  writeln("statCalc aliased");
-  
-//  writeln("creating tempMob");
-  Mob tempMob;
-//  writeln("tempMob created");
-
-//  writeln("assigning job");
-  tempMob.job = dict["job"].str;
-//  writeln("Job assigned");
-
-//  writeln("assigning name");
-  tempMob.name = dict["name"].str;
-//  writeln("name assigned");
-  
-//  writeln("assigning level");
-  tempMob.level = lvl;
-//  writeln("level assigned");
-
-//  writeln("calcluating Pattack");
-  tempMob.Pattack = C(dict["Pattack"], lvl);
-//  writeln("Done");
-
-//  writeln("calcluating Mattack");
-  tempMob.Mattack = C(dict["Mattack"], lvl);
-//  writeln("Done");
-
-//  writeln("calcluating Pdefense");
-  tempMob.Pdefense = C(dict["Pdefense"], lvl);
-//  writeln("Done");
-
-//  writeln("calcluating Mdefense");
-  tempMob.Mdefense = C(dict["Mdefense"], lvl);
-//  writeln("Done");
-
-//  writeln("calcluating speed");
-  tempMob.speed = C(dict["speed"], lvl);
-//  writeln("Done");
-
-//  writeln("calcluating agility");
-  tempMob.agility = C(dict["agility"], lvl);
-//  writeln("Done");
-
-//  writeln("calcluating health");  
-  tempMob.health = C(dict["health"], lvl);
-//  writeln("Done");
-
-//  writeln("calcluating stamina");
-  tempMob.stamina = C(dict["stamina"], lvl);
-//  writeln("Done");
-
-//  writeln("calcluating mana"); 
-  tempMob.mana = C(dict["mana"], lvl);
-//  writeln("Done");
-
-
-  tempMob.MainHand = dict["MainHand"].toString;
-  tempMob.OffHand = dict["OffHand"].toString;
-  tempMob.Body = dict["Body"].toString;
-  tempMob.Head = dict["Head"].toString;
-  tempMob.Misc = dict["Misc"].toString;
-
-  tempMob.exp = 0;
-  tempMob.NEXTexp = 0;
-  
-  return tempMob;
-}
-*/
