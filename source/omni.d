@@ -26,101 +26,117 @@ union omni
   string _STRING;
   char _CHAR;
 
-  @property auto UBYTE()
+  @property auto ref UBYTE()
   {
     return _UBYTE;
   }
-  @property auto BYTE()
+  @property auto refBYTE()
   {
     return _BYTE;
   }
-  @property auto USHORT()
+  @property auto ref USHORT()
   {
     return _USHORT;
   }
-  @property auto SHORT()
+  @property auto ref SHORT()
   {
     return _SHORT;
   }
-  @property auto UINT()
+  @property auto ref UINT()
   {
     return _UINT;
   }
-  @property auto INT()
+  @property auto ref INT()
   {
     return _INT;
   }
-  @property auto ULONG()
+  @property auto ref ULONG()
   {
     return _ULONG;
   }
-  @property auto LONG()
+  @property auto ref LONG()
   {
     return _LONG;
   }
-  @property auto FLOAT()
+  @property auto ref FLOAT()
   {
     return _FLOAT;
   }
-  @property auto DOUBLE()
+  @property auto ref DOUBLE()
   {
     return _DOUBLE;
   }
-  @property auto CHAR()
+  @property auto ref CHAR()
   {
     return _CHAR;
   }
-  @property auto STRING()
+  @property auto ref STRING()
   {
     return _STRING;
   }
 
-  @property auto UBYTEA()
+  @property auto ref UBYTEA()
   {
     return _UBYTEA;
   }
-  @property auto BYTEA()
+  @property auto ref BYTEA()
   {
     return _BYTEA;
   }
-  @property auto USHORTA()
+  @property auto ref USHORTA()
   {
     return _USHORTA;
   }
-  @property auto SHORTA()
+  @property auto ref SHORTA()
   {
     return _SHORTA;
   }
-  @property auto UINTA()
+  @property auto ref UINTA()
   {
     return _UINTA;
   }
-  @property auto INTA()
+  @property auto ref INTA()
   {
     return _INTA;
   }
-  @property auto ULONGA()
+  @property auto ref ULONGA()
   {
     return _ULONGA;
   }
-  @property auto LONGA()
+  @property auto ref LONGA()
   {
     return _LONGA;
   }
-  @property auto FLOATA()
+  @property auto ref FLOATA()
   {
     return _FLOATA;
   }
-  @property auto DOUBLEA()
+  @property auto ref DOUBLEA()
   {
     return _DOUBLEA;
   }
-  @property auto CHARA()
+  @property auto ref CHARA()
   {
     return _CHARA;
   }
-  @property auto STRINGA()
+  @property auto ref STRINGA()
   {
     return _STRINGA;
   }
 }
+/*
+void main()
+{
+  import std.stdio : writeln;
+
+  omni test;
+
+  test.UBYTE = 98;
+
+  ubyte a = test.UBYTE;
+  char b = test.CHAR;
+  
+  writeln(a);
+  writeln(b);
+}
+*/
