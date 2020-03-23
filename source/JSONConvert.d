@@ -1,5 +1,6 @@
 version(unittest) import fluent.asserts;
 import std.json;
+import omni;
 
 union USON 
 {
@@ -12,11 +13,11 @@ union USON
   string[] STRINGA;
 }
 
-USON JSONConvert(inout ref JSONValue value)
+omni JSONConvert(inout ref JSONValue value)
 {
   import std.conv : to;
 
-  USON temp;
+  omni temp;
   switch(to!string(value.type))
   {
     case "array" :
@@ -66,6 +67,16 @@ USON JSONConvert(inout ref JSONValue value)
     default:
       break;
   }
+}
+
+void main()
+{
+  auto test = parseJSON(`{{"A" : "A", "B" : 1}}`);
+  string a = JSONConvert(test["A"]);
+  uint b = JSONConvert(test["B"]);
+  writeln(a);
+  writeln(b);
+
 }
 
 unittest
