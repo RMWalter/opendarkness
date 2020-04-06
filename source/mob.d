@@ -1,53 +1,5 @@
 version(unittest) import fluent.asserts;
 
-abstract class _Mob
-{
-  import std.random : uniform;
-
-  ubyte[] Attribute;
-
-  union STAT
-  {
-    ubyte[] UA;
-    string TEXT;
-    ushort S;
-    uint I;
-    ulong L;
-  }
-  
-  // Stats and skills in subclassess will be properties associated with values in the Attribute array. That way it's easier to create however many stats you want, call them whatever you want, and have them interact however you want.
-
-  this(ubyte[] values)
-  {
-    this.Attribute = values;
-  }
-
-  template assign(T)
-  {
-    ubyte[] assign(T input)
-    {
-      STAT temp = input;
-      return temp.UA;
-    }
-  }
-
-  template(T) build
-  {
-    ubyte[] build(T stat, out int[] ptr)
-    {
-      ubyte[] temp;
-      int[] pos = 0;
-
-      foreach(i; stat)
-      {
-        temp ~= assign(i);
-        pos ~= temp.length - 1;
-      }
-      
-      return temp;
-    }
-  }
-
 /*
   uint roll(uint stat)
   {// A simple stat roll method
@@ -126,10 +78,6 @@ abstract class _Mob
     check(2, 1).Should.Equal(false).Because("Player roll didn\'t meet the challenge rating");
   }
 
-*/
-
-}
-
 template mixin TBB_Class()
 {
   class TBB_Mob : _Mob
@@ -143,6 +91,7 @@ template mixin TBB_Class()
     }
   }
 }
+*/
 
 class TBB_Mob : _Mob
 {
@@ -305,21 +254,21 @@ unittest
   test.job.Should.Equal("Fighter").Because(`That's what I set it at`);
 }
 
-class OD_Mob: Mob
+class OD_Mob
 {
 
-  ubyte[3] mind;
-  ubyte[3] spirit;
-  ubyte[3] perception;
-  ubyte[3] luck;
+  immutable ubyte mind;
+  immutable ubyte spirit;
+  immutable ubyte perception;
+  immutable ubyte luck;
     
-  ubyte[3] strength;
-  ubyte[3] endurance;
-
+  immutable ubyte strength;
+  immutable ubyte endurance;
+  immutable ubyte agility;
+  immutable ubyte speed;
+  
   this()
   {
-    super.this()
-    
     this.mind = 1;
     this.spirit = 1;
     this.perception = 1;
@@ -327,16 +276,17 @@ class OD_Mob: Mob
 
     this,strength = 1;
     this.endurance = 1;
-
+    this.agility = 1;
+    this.speed = 1;
   }
 }
 
-class Hero : _Mob
+class OD_Hero : OD_Mob
 {
-  immutable static string[] _RaceDefs;
+  immutable string race;
 
-  string job;
-  int level;
+  immutable string job;
+  immutable ubyte level;
 
   string MainHand;
   string OffHand;
@@ -345,7 +295,7 @@ class Hero : _Mob
   string[2] Misc;
 
   int exp;
-  int NEXTexp;
+  immutable int NEXTexp;
 
   this(ref JSONValue master, string entry, string name, int lvl)
   {
