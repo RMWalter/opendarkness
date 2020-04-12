@@ -93,16 +93,22 @@ template mixin TBB_Class()
 }
 */
 
-class TBB_Mob : _Mob
+class TBB_Mob
 {
   // old school final fantasy style mob, has same types of stats and abilities, intended for use in similar styled games.
 
-  alias A = Attribute;
+  immutable auto PAttack;
+  immutable auto MAttack;
+  immutable auto PAttack;
+  immutable auto MDefense;
+  immutable auto Agility;
+  immutable auto Health;
+  immutable auto Mana;
+
+  string Job; // the mob's class, determines stats, AI behaviour if applicable, and abilities. Example: fighter, Mage, Healer. Should be set using the _JobDefs list.
 
   immutable static string[] _JobDefs;
   
-  string job; // the mob's class, determines stats, AI behaviour if applicable, and abilities. Example: fighter, Mage, Healer. Should be set using the _JobDefs list.
-
   int[string[string]] FLAGS; // flags for things like conditions, like poison.
 /*
   bool guarding;
@@ -113,68 +119,11 @@ class TBB_Mob : _Mob
   bool confused;
   bool burning;
 */
-  this(string Name, uint[] stats, string Job)
-  {
-    super(Name, stats);
-    this.job = Job;
-  }
 
-  @property auto agility()
+  this(uint[] stats, string job)
   {
-    // governs accuracy and evasiveness
-    return A[0];
+    this.Job = job;
   }
-
-  @property auto speed()
-  {
-    // how physically fast a mob can act , move, and similar.
-    return A[1];
-  }
-  
-  @property auto Pattack()
-  {
-    // Physical damage
-    return A[2];
-  }
-
-  @property auto Mattack()
-  {
-    // Magic damage
-    return A[3];  
-  }
-
-  @property auto Pdefense()
-  {
-    // Physical defense
-    return A[4];
-  }
-
-  @property auto Mdefense()
-  {
-    // Magic defense
-    return A[5];
-  }
-
-  @property auto health()
-  {
-    return A[6];
-  }
-
-  @property auto stamina()
-  {
-    return A[8];
-  }
-
-  @property auto mana()
-  {
-    return A[10];
-  }
-
-  @property level()
-  {
-    return A[12];
-  }
-//  alias DP = void delegate(string[])[string];
   
   void CalcFlags(string id)
   {
@@ -195,10 +144,12 @@ class TBB_Mob : _Mob
 
   uint[] Fill(ref JSONValue master, string entry, int lvl)
   {
-    uint[] temp;
+    import JSONConvert;
     alias C = statCalc;
     alias J = JSONConvert;
+    
     auto D = master[entry];
+    uint[] temp;
 
     //D["name"].J;
     //D["job"].J;
