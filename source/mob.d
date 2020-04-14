@@ -97,17 +97,19 @@ class TBB_Mob
 {
   // old school final fantasy style mob, has same types of stats and abilities, intended for use in similar styled games.
 
-  immutable auto PAttack;
-  immutable auto MAttack;
-  immutable auto PAttack;
-  immutable auto MDefense;
-  immutable auto Agility;
-  immutable auto Health;
-  immutable auto Mana;
+  string Job; // the mob's class, determines stats, AI behaviour if applicable, and abilities. Example: fighter, Mage, Healer.
 
-  string Job; // the mob's class, determines stats, AI behaviour if applicable, and abilities. Example: fighter, Mage, Healer. Should be set using the _JobDefs list.
+  immutable ubyte Level;
 
-  immutable static string[] _JobDefs;
+  immutable ubyte PAttack;
+  immutable ubyte MAttack;
+  immutable ubyte PAttack;
+  immutable ubyte MDefense;
+  immutable ubyte Agility;
+
+  immutable uint Health;
+  immutable uint Mana;
+  immutable uint Stamina;
   
   int[string[string]] FLAGS; // flags for things like conditions, like poison.
 /*
@@ -120,9 +122,21 @@ class TBB_Mob
   bool burning;
 */
 
-  this(uint[] stats, string job)
+  this(string job = "Generic", ubyte level, ubyte[5] stats = 0, uint[3] body = 0)
   {
     this.Job = job;
+
+    this.Level = level;
+
+    this.PAttack = stats[0];
+    this.PDefense = stats[1];
+    this.MAttack = stats[2];
+    this.MDefense = stats[3];
+    this.Agility = stats[4];
+
+    this.Health = body[0];
+    this.Mana = body[1];
+    this.Stamina = body[2];
   }
   
   void CalcFlags(string id)
@@ -198,11 +212,16 @@ class TBB_Mob
 unittest
 {
   uint[13] array = 10;
-  auto test = new FF_Mob("Human", array, "Fighter")
+  auto test = new TBB_Mob("Human", array, "Fighter")
 
   test.Pattack.Should.Equal(10).Because(`That's what I set it at`);
   test.name.Should.Equal("Human").Because(`That's what I set it at`);
   test.job.Should.Equal("Fighter").Because(`That's what I set it at`);
+}
+
+class TBB_Hero : TBB_Mob
+{
+
 }
 
 class OD_Mob
