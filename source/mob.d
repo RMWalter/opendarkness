@@ -80,7 +80,7 @@ version(unittest) import fluent.asserts;
 
 template mixin TBB_Class()
 {
-  class TBB_Mob : _Mob
+  class TBB_Mob
   {
     mixin property_maker()
     {
@@ -97,7 +97,7 @@ class TBB_Mob
 {
   // old school final fantasy style mob, has same types of stats and abilities, intended for use in similar styled games.
 
-  string Job; // the mob's class, determines stats, AI behaviour if applicable, and abilities. Example: fighter, Mage, Healer.
+  string Job; // the mob's class, determines stats, AI behaviour if applicable, and abilities. Example: Fighter, Mage, Healer.
 
   immutable ubyte Level;
 
@@ -155,7 +155,8 @@ class TBB_Mob
         break;
     }
   }
-
+}
+/*
   uint[] Fill(ref JSONValue master, string entry, int lvl)
   {
     import JSONConvert;
@@ -207,7 +208,7 @@ class TBB_Mob
   //    writeln("rand: ", rand);
     return var[0] + rand;
   }
-}
+*/
 
 unittest
 {
@@ -222,6 +223,64 @@ unittest
 class TBB_Hero : TBB_Mob
 {
 
+}
+
+
+class TBB_Hero : TBB_Mob
+{
+  immutable string Name;
+
+  string MainHand;
+  string OffHand;
+  string Body;
+  string Head;
+  string[2] Misc;
+
+  int XP;
+  immutable int NEXP;
+
+  this(string job = "Generic", ubyte level, ubyte[5] stats = 0, uint[3] body = 0, string name = "Generic", string[6] equip = "Generic", int xp = 0)
+  {
+    super(job, level, stats, body);
+
+    this.Name = name;
+
+    this.MainHand = equip[0];
+    this.OffHAnd = equip[1];
+    this.Body = equip[2];
+    this.Head = equip[3];
+    this.Misc[0] = equip[4];
+    this.Misc[1] = equip[5];
+
+    this.XP = xp;
+  }
+
+  @property NEXP()
+  {
+    return Level * 1000;
+  }
+
+  TBB_Mob LevelUp()
+  {
+    XP -= NEXP;
+    Level ++;
+    
+    if(XP >= NEXP)
+    {
+      LevelUp();
+    }
+
+    return new Hero();
+  }
+
+  void GainXP(int xpVal)
+  {
+    XP += xpVal;
+    if (XP >= NEXP)
+    {
+      LevelUp();
+    }
+  }
 }
 
 class OD_Mob
@@ -248,54 +307,5 @@ class OD_Mob
     this.endurance = 1;
     this.agility = 1;
     this.speed = 1;
-  }
-}
-
-class OD_Hero : OD_Mob
-{
-  immutable string race;
-
-  immutable string job;
-  immutable ubyte level;
-
-  string MainHand;
-  string OffHand;
-  string Body;
-  string Head;
-  string[2] Misc;
-
-  int exp;
-  immutable int NEXTexp;
-
-  this(ref JSONValue master, string entry, string name, int lvl)
-  {
-    super(master, entry, lvl);
-
-    auto dict = master[entry];
-
-    this.name = name;
-    
-    this.job = dict["job"].str;
-    this.level = lvl;
-
-    this.MainHand = dict["MainHand"].str;
-    this.OffHand = dict["OffHand"].str;
-    this.Body = dict["Body"].str;
-    this.Head = dict["Head"].str;
-    this.Misc[0] = dict["Misc"][0].str;
-    this.Misc[1] = dict["Misc"][1].str;
-    
-    this.exp = 0;
-    this.NEXTexp = lvl * 1000;
-  }  
-
-  void LevelUp()
-  {
-
-  }
-
-  void GainXP()
-  {
-
   }
 }
