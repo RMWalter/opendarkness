@@ -283,15 +283,6 @@ class TBB_Hero : TBB_Mob
   }
 }
 
-class TBB_Battler : TBB_Hero
-{
-
-  this()
-  {
-    super();
-  }
-}
-
 class OD_Mob
 {
 
