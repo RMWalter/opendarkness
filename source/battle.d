@@ -45,11 +45,14 @@ class TB_SF_Battle
   import std.random : uniform;
   import std.conv : to;
   
-  auto allies;
+  auto party;
   auto enemies;
 
-//  alias DP = void delegate(string[])[string];
-
+  void initiative()
+  {
+    
+  }
+  
   void round()
   {
     /*
