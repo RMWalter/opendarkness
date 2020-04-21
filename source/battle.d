@@ -31,7 +31,7 @@ aim and obstacles may affect actions.
 
 version(unittest) import fluent.asserts;
 
-class TB_SF_Battle
+class TBB_Battle
 {
   /*
    Turn Based Static Field Battle system
@@ -45,15 +45,39 @@ class TB_SF_Battle
   import std.random : uniform;
   import std.conv : to;
   
-  auto party;
-  auto enemies;
+  TBB_Mob[] ally; //hooks into pre existing TBB_Hero objects from TBB_PartyManager
+  TBB_Mob[] enemies; //Generated for the battle
+
+  TBB_Mob[] InitiativeTracker; populated from the result of initiativeCacl function per combat round.
 
   void initiative()
   {
-    
+    TBB_Mob[] Calc = ally ~ enemy;
+
+    for(int i = 0; i < Calc.length -2; i++)
+    {
+      if (Calc[i + 1].Agility >= Calc[i].Agility)
+      {
+        TBB_Mob temp = Calc[i];
+        
+        Calc[i] = Calc[i + 1];
+        Calc[i + 1] = temp;
+      }
+    }
+    InitiativeTracker = Calc;
+  }
+
+  void CombatRound()
+  {
+    initiative();
+    foreach(i; InitativeTracker;)
+    {
+      CombatTurn(i);
+    }
+    CombatRound();
   }
   
-  void round()
+  void CombatTurn(TBB_Mob unit)
   {
     /*
     PHASE 1
@@ -101,16 +125,6 @@ class TB_SF_Battle
     effect at the end of a characters turn.
     */
   }
-
-  void Phase_2(Mob unit)
-  {
-    import std.stdio : readln;
-    import std.string : strip;
-
-//    message["turn"]([unit.name]);
-
-    Phase_3(unit);
-  }
     /*
 //    writeln(userinput);
 
@@ -150,7 +164,7 @@ class TB_SF_Battle
 
   void Graveyard(Mob entity)
   {
-    Mob[] slice;
+    TBB_Mob[] slice;
   
     if(entity.job == "Monster")
     {
