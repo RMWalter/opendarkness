@@ -97,6 +97,8 @@ class TBB_Mob
 {
   // old school final fantasy style mob, has same types of stats and abilities, intended for use in similar styled games.
 
+  immutable string Name;
+
   string Job; // the mob's class, determines stats, AI behaviour if applicable, and abilities. Example: Fighter, Mage, Healer.
 
   immutable ubyte Level;
@@ -110,49 +112,55 @@ class TBB_Mob
   immutable uint Health;
   immutable uint Mana;
   immutable uint Stamina;
-  
-  int[string[string]] FLAGS; // flags for things like conditions, like poison.
-/*
-  bool guarding;
-  bool poisoned;
-  bool paralysed;
-  bool sleeping;
-  bool stunned;
-  bool confused;
-  bool burning;
-*/
 
-  this(string job = "Generic", ubyte level, ubyte[5] stats = 0, uint[3] body = 0)
+  string MainHand;
+  string OffHand;
+  string Body;
+  string Head;
+  string[2] Misc;
+ 
+  uint HP;
+  uint MP;
+  uint SP;
+
+  uint XPVal; //XP value of this mob when its killed;
+
+  this(bool JSON = false, string job = "Generic", ubyte level, ubyte[5] stats = 0, uint[4] body = 0, string[6] equip = "Generic")
   {
-    this.Job = job;
+    if(JSON = false)
+    {  
+      this.Job = job;
 
-    this.Level = level;
+      this.Level = level;
 
-    this.PAttack = stats[0];
-    this.PDefense = stats[1];
-    this.MAttack = stats[2];
-    this.MDefense = stats[3];
-    this.Agility = stats[4];
+      this.PAttack = stats[0];
+      this.PDefense = stats[1];
+      this.MAttack = stats[2];
+      this.MDefense = stats[3];
+      this.Agility = stats[4];
 
-    this.Health = body[0];
-    this.Mana = body[1];
-    this.Stamina = body[2];
-  }
-  
-  void CalcFlags(string id)
-  {
-    switch(id)
+      this.Health = body[0];
+      this.Mana = body[1];
+      this.Stamina = body[2];
+
+      this.Name = name;
+
+      this.MainHand = equip[0];
+      this.OffHand = equip[1];
+      this.Body = equip[2];
+      this.Head = equip[3];
+      this.Misc[0] = equip[4];
+      this.Misc[1] = equip[5];
+
+      this.HP = body[0];
+      this.MP = body[1];
+      this.SP = body[2];
+
+      this.XPVal = body[3];
+    }
+    else
     {
-      case "COMBAT" :
-        break;
-      case "CONDITION" :
-        break;
-      case "BUFF" :
-        break;
-      case "DEBUFF" :
-        break;
-      default :
-        break;
+      
     }
   }
 }
@@ -202,10 +210,10 @@ class TBB_Mob
     
     int mod = var[1] * lv;
     int rand = uniform(1, mod + 1);
-  //    writeln("var[1]: ",var[1]);
-  //    writeln("lv: ", lv);
-  //    writeln("mod: ", mod);
-  //    writeln("rand: ", rand);
+    //writeln("var[1]: ",var[1]);
+    //writeln("lv: ", lv);
+    //writeln("mod: ", mod);
+    //writeln("rand: ", rand);
     return var[0] + rand;
   }
 */
@@ -223,40 +231,11 @@ unittest
 class TBB_Hero : TBB_Mob
 {
 
-}
-
-
-class TBB_Hero : TBB_Mob
-{
-  immutable string Name;
-
-  string MainHand;
-  string OffHand;
-  string Body;
-  string Head;
-  string[2] Misc;
-
-  int XP;
-  immutable int NEXP;
-
-  this(string job = "Generic", ubyte level, ubyte[5] stats = 0, uint[3] body = 0, string name = "Generic", string[6] equip = "Generic", int xp = 0)
-  {
-    super(job, level, stats, body);
-
-    this.Name = name;
-
-    this.MainHand = equip[0];
-    this.OffHAnd = equip[1];
-    this.Body = equip[2];
-    this.Head = equip[3];
-    this.Misc[0] = equip[4];
-    this.Misc[1] = equip[5];
-
-    this.XP = xp;
-  }
+  uint XP; // How much XP the hero has.
 
   @property NEXP()
   {
+    // XP needed to level up.
     return Level * 1000;
   }
 
@@ -270,7 +249,7 @@ class TBB_Hero : TBB_Mob
       LevelUp();
     }
 
-    return new Hero();
+    return new Mob();
   }
 
   void GainXP(int xpVal)
