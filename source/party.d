@@ -1,18 +1,9 @@
 class TBB_Party
 {
+  import inventory;
   static struct TBB_Inventory
   {
-    static struct ItemSlot
-    {
-      Item* Name; //points to an item definition
-      ubyte Amount;
 
-      delegate void Use()
-      {
-
-      }
-    }
-    ItemSlot[] Slot;
   }
   
   TBB_Hero[] Party;
