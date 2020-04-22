@@ -123,7 +123,7 @@ class TBB_Mob
   uint MP;
   uint SP;
 
-  uint XPVal; //XP value of this mob when its killed;
+  //XP Value should be calculated at the end of combat and then given to the hero's if they win.
 
   this(bool JSON = false, string job = "Generic", ubyte level, ubyte[5] stats = 0, uint[4] body = 0, string[6] equip = "Generic")
   {
