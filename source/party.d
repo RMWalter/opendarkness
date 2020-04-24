@@ -1,10 +1,6 @@
 class TBB_Party
 {
   import inventory;
-  static struct TBB_Inventory
-  {
-
-  }
   
   TBB_Hero[] Party;
 
