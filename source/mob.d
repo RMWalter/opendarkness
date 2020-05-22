@@ -107,6 +107,7 @@ class TBB_Mob
   immutable ubyte MAttack;
   immutable ubyte PAttack;
   immutable ubyte MDefense;
+  immutable ubyte Speed;
   immutable ubyte Agility;
 
   immutable uint Health;
